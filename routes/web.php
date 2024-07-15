@@ -2,6 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MataKuliahController;
+use App\Http\Controllers\DosenController;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,3 +23,29 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+// routes/web.php
+
+// Route::get('/dashboard', [DashboardController::class, 'view'])->name('dashboard');
+// Route::get('/mata-kuliah', [MataKuliahController::class, 'view'])->name('mata-kuliah');
+// Route::get('/dosen', [DosenController::class, 'view'])->name('dosen');
+// Route::get('/mahasiswa', [MahasiswaController::class, 'view'])->name('mahasiswa');
+// Route::get('/report', [ReportController::class, 'view'])->name('report');
+// Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+
+Route::get('/dashboard', function () {
+            return view('dashboard');
+        })->name('dashboard');
+Route::get('/mata-kuliah', function () {
+            return view('dashboard');
+        })->name('mata-kuliah');
+Route::get('/dosen', function () {
+            return view('dashboard');
+        })->name('dosen');
+Route::get('/mahasiswa', function () {
+            return view('dashboard');
+        })->name('mahasiswa');
+Route::get('/report', function () {
+            return view('dashboard');
+        })->name('report');
