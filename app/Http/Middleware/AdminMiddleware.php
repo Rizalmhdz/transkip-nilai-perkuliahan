@@ -15,6 +15,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        if ($request->user() && $request->user()->level == 1) {
+            return $next($request);
+        }
+
+        abort(403, 'Unauthorized.');
     }
 }

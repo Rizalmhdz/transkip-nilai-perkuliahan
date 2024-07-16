@@ -1,35 +1,41 @@
-<!-- resources/views/components/sidebar-admin.blade.php -->
-<div x-data="{ activeTab: '{{ Route::currentRouteName() }}' }" class="d-flex flex-column flex-shrink-0 p-3 bg-light position-fixed vh-100" style="width: 280px;">
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-            <a href="{{ route('dashboard') }}" @click="activeTab = 'dashboard'" :class="{ 'active': activeTab === 'dashboard', 'link-dark': activeTab !== 'dashboard' }" class="nav-link" aria-current="page">
-                Dashboard
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('mata-kuliah') }}" @click="activeTab = 'mata-kuliah'" :class="{ 'active': activeTab === 'mata-kuliah', 'link-dark': activeTab !== 'mata-kuliah' }" class="nav-link">
-                Mata Kuliah
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('dosen') }}" @click="activeTab = 'dosen'" :class="{ 'active': activeTab === 'dosen', 'link-dark': activeTab !== 'dosen' }" class="nav-link">
-                Dosen
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('mahasiswa') }}" @click="activeTab = 'mahasiswa'" :class="{ 'active': activeTab === 'mahasiswa', 'link-dark': activeTab !== 'mahasiswa' }" class="nav-link">
-                Mahasiswa
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('report') }}" @click="activeTab = 'report'" :class="{ 'active': activeTab === 'report', 'link-dark': activeTab !== 'report' }" class="nav-link">
-                Report
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('profile.edit') }}" @click="activeTab = 'profile'" :class="{ 'active': activeTab === 'profile', 'link-dark': activeTab !== 'profile' }" class="nav-link">
-                Profile
-            </a>
-        </li>
-    </ul>
-</div>
+<div :class="isSidebarOpen ? 'sidebar-expand' : 'sidebar-collapse'" class="sidebar bg-body-tertiary flex-shrink-0">
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="{{ route('dashboard') }}" class="nav-link" :class="{ 'active': '{{ request()->routeIs('dashboard') }}' }">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="ms-2 d-md-inline" :class="isSidebarOpen ? 'd-inline' : 'd-none'">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('mata-kuliah') }}" class="nav-link" :class="{ 'active': '{{ request()->routeIs('mata-kuliah') }}' }">
+                    <i class="fas fa-book"></i>
+                    <span class="ms-2 d-md-inline" :class="isSidebarOpen ? 'd-inline' : 'd-none'">Mata Kuliah</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('dosen') }}" class="nav-link" :class="{ 'active': '{{ request()->routeIs('dosen') }}' }">
+                    <i class="fas fa-user"></i>
+                    <span class="ms-2 d-md-inline" :class="isSidebarOpen ? 'd-inline' : 'd-none'">Dosen</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('mahasiswa') }}" class="nav-link" :class="{ 'active': '{{ request()->routeIs('mahasiswa') }}' }">
+                    <i class="fas fa-user-graduate"></i>
+                    <span class="ms-2 d-md-inline" :class="isSidebarOpen ? 'd-inline' : 'd-none'">Mahasiswa</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('report') }}" class="nav-link" :class="{ 'active': '{{ request()->routeIs('report') }}' }">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="ms-2 d-md-inline" :class="isSidebarOpen ? 'd-inline' : 'd-none'">Report</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('profile.edit') }}" class="nav-link" :class="{ 'active': '{{ request()->routeIs('profile.edit') }}' }">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="ms-2 d-md-inline" :class="isSidebarOpen ? 'd-inline' : 'd-none'">Profile</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
