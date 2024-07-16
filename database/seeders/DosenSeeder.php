@@ -16,20 +16,32 @@ class DosenSeeder extends Seeder
 
         $dosens = [
             [
-                'nip' => '1271928121902910229',
+                'nidn' => '1234567890',
                 'nama' => 'syahroni',
                 'email_dosen' => 'syahroni@gmail.com',
                 'created_at' => now(),
                 'updated_at' => now(),
-                // 'timestamps' => now(),
             ],
             [
-                'nip' => '1271928121902910231',
+                'nidn' => '0123456789',
                 'nama' => "Ani",
                 'email_dosen' => 'ani1234@gmail.com',
                 'created_at' => now(),
                 'updated_at' => now(),
-                // 'timestamps' => now(),
+            ],
+            [
+                'nidn' => '0133456789',
+                'nama' => "Handoko",
+                'email_dosen' => 'Handoko@gmail.com',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nidn' => '0113456789',
+                'nama' => "Noval",
+                'email_dosen' => 'Noval@gmail.com',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             
         ];

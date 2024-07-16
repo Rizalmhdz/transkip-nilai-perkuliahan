@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('mahasiswas', function (Blueprint $table) {
             $table->id();
-            $table->string('nim')->unique();
+            $table->string('nim', 10)->unique();
             $table->string('nama_lengkap');
-            $table->date('tempat_lahir');
+            $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
             $table->integer('angkatan');
             $table->string('dosen_akademik');
-            $table->foreign('dosen_akademik')->references('nip')->on('dosens'); // References 'id' column on 'users' table
+            $table->foreign('dosen_akademik')->references('nidn')->on('dosens'); // References 'id' column on 'users' table
 
             $table->timestamps();
         });

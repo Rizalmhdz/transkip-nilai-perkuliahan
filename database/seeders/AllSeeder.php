@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class AdminSeeder extends Seeder
+class AllSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +15,13 @@ class AdminSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             DosenSeeder::class,
-            MataKuliahSeeder::class,
+            ProdiSeeder::class,
+            DosenProdiSeeder::class,
+            DirekturSeeder::class,
+            KategoriMatkulSeeder::class,
             MahasiswaSeeder::class,
-            RencanaStudiSeeder::class,
+            KaryaTulisSeeder::class,
+            MataKuliahSeeder::class,
             HasilStudiSeeder::class,
         ]);
     }

@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class HasilStudiSeeder extends Seeder
+class KaryaTulisSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,33 +14,27 @@ class HasilStudiSeeder extends Seeder
     public function run(): void
     {
 
-        $hasil_studis = [
+        $karya_tuliss = [
             [
-                'id_mata_kuliah' => 1,
+                'judul' => 'Judul 1',
                 'nim' => '1234567891',
-                'nilai' => 3,
+                'pembimbing' => '1234567890',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'id_mata_kuliah' => 2,
-                'nim' => '1234567891',
-                'nilai' => 3,
+                'judul' => 'Judul 2',
+                'nim' => '1234567892',
+                'pembimbing' => '0123456789',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'id_mata_kuliah' => 3,
-                'nim' => '1234567891',
-                'nilai' => 4,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-           
-            
         ];
-
+        
         // Insert data menggunakan DB facade
-        DB::table('hasil_studis')->insert($hasil_studis);
+        DB::table('karya_tuliss')->insert($karya_tuliss);
+    
     }
+        
+    
 }

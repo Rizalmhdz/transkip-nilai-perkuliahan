@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('mata_kuliahs', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_mata_kuliah')->unique();
             $table->string('nama_mata_kuliah');
             $table->unsignedInteger('sks');
-            $table->enum('semester', ['ganjil', 'genap']);
+            $table->string('kategori_matkul');
+            $table->foreign('kategori_matkul')->references('kode_kategori')->on('kategori_matkuls');
             $table->string('dosen_pengampu');
-            $table->foreign('dosen_pengampu')->references('nip')->on('dosens');
-            $table->string('prodi');
+            $table->foreign('dosen_pengampu')->references('nidn')->on('dosens');
+            $table->unsignedBigInteger('prodi');
             $table->foreign('prodi')->references('id')->on('prodis');
             $table->timestamps();
         });

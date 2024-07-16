@@ -6,44 +6,44 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class MataKuliahSeeder extends Seeder
+class DosenProdiSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $mata_kuliahs = [
+
+        $dosen_prodis = [
             [
-                'nama_mata_kuliah' => 'Mata Kuliah 1',
-                'sks' => 3,
-                'kategori_matkul' => 'MKB',
-                'dosen_pengampu' => '1234567890',
+                'nidn' => '1234567890',
                 'prodi' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama_mata_kuliah' => 'Mata Kuliah 2',
-                'sks' => 3,
-                'kategori_matkul' => 'MKK',
-                'dosen_pengampu' => '1234567890',
+                'nidn' => '0123456789',
+                'prodi' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nidn' => '0133456789',
                 'prodi' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama_mata_kuliah' => 'Mata Kuliah 1',
-                'sks' => 3,
-                'kategori_matkul' => 'MPB',
-                'dosen_pengampu' => '0113456789',
-                'prodi' => 1,
+                'nidn' => '0113456789',
+                'prodi' => 3,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            
         ];
 
         // Insert data menggunakan DB facade
-        DB::table('mata_kuliahs')->insert($mata_kuliahs);
+        DB::table('dosen_prodis')->insert($dosen_prodis);
     }
+    
 }
