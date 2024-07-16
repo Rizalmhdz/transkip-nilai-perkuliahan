@@ -34,12 +34,16 @@ require __DIR__.'/auth.php';
 // Route::get('/report', [ReportController::class, 'view'])->name('report');
 // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
 
+
+
+Route::resource('matakuliah', MataKuliahController::class);
+
 Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
-Route::get('/mata-kuliah', function () {
-            return view('dashboard');
-        })->name('mata-kuliah');
+// Route::get('/mata-kuliah', function () {
+//             return view('mata_kuliah_page');
+//         })->name('mata-kuliah');
 Route::get('/dosen', function () {
             return view('dashboard');
         })->name('dosen');
