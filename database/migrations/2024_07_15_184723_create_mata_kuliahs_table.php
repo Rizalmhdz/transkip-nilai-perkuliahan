@@ -17,10 +17,8 @@ return new class extends Migration
             $table->string('nama_mata_kuliah');
             $table->unsignedInteger('sks');
             $table->enum('semester', ['ganjil', 'genap']);
-            $table->string('dosen_pengampu_1');
-            $table->foreign('dosen_pengampu_1')->references('nip')->on('dosens');
-            $table->string('dosen_pengampu_2');
-            $table->foreign('dosen_pengampu_2')->references('nip')->on('dosens')->nullable();;
+            $table->string('dosen_pengampu');
+            $table->foreign('dosen_pengampu')->references('nip')->on('dosens');
             $table->timestamps();
         });
     }

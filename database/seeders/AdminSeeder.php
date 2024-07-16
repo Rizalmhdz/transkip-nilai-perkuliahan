@@ -13,7 +13,12 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class
+            UserSeeder::class,
+            DosenSeeder::class,
+            MataKuliahSeeder::class,
+            MahasiswaSeeder::class,
+            RencanaStudiSeeder::class,
+            HasilStudiSeeder::class,
         ]);
     }
 }

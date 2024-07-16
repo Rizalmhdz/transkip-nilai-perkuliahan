@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('mahasiswa', function (Blueprint $table) {
+        Schema::create('mahasiswas', function (Blueprint $table) {
             $table->id();
             $table->string('nim')->unique();
             $table->string('nama_lengkap');
             $table->date('tanggal_lahir');
             $table->text('alamat');
-            $table->integer('tahun_masuk');
-            $table->integer('semester');
+            $table->integer('angkatan');
+            // $table->integer('semester');
 
             // Foreign key custom column
             $table->string('email_mhs');

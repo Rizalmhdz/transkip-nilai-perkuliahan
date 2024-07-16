@@ -6,46 +6,46 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class MataKuliahSeeder extends Seeder
+class HasilStudiSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-
-        $mata_kuliahs = [
+        $hasil_studis = [
             [
+                'id' => '1',
                 'kode_mata_kuliah' => 'MK001',
-                'nama_mata_kuliah' => 'Mata Kuliah 1',
-                'sks' => 3,
-                'semester' => 'ganjil',
-                'dosen_pengampu' => '1271928121902910229',
+                'id_rencana_studi' => 1,
+                'nilai' => '70',
+                'status' => 'lulus',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
+                'id' => '2',
                 'kode_mata_kuliah' => 'MK002',
-                'nama_mata_kuliah' => 'Mata Kuliah 2',
-                'sks' => 3,
-                'semester' => 'genap',
-                'dosen_pengampu' => '1271928121902910229',
+                'id_rencana_studi' => 5,
+                'nilai' => '85',
+                'status' => 'lulus',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
+                'id' => '3',
                 'kode_mata_kuliah' => 'MK003',
-                'nama_mata_kuliah' => 'Mata Kuliah 3',
-                'sks' => 2,
-                'semester' => 'genap',
-                'dosen_pengampu' => '1271928121902910231',
+                'id_rencana_studi' => 5,
+                'nilai' => '75',
+                'status' => 'lulus',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+           
             
         ];
 
         // Insert data menggunakan DB facade
-        DB::table('mata_kuliahs')->insert($mata_kuliahs);
+        DB::table('hasil_studis')->insert($hasil_studis);
     }
 }

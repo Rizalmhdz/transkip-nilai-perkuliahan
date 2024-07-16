@@ -16,9 +16,20 @@ class DosenSeeder extends Seeder
 
         $dosens = [
             [
-                'nip' => "1271928121902910229",
-                'nama' => "Ahmad Syahroni",
-                'timestamps' => now(),
+                'nip' => '1271928121902910229',
+                'nama' => 'syahroni',
+                'email_dosen' => 'syahroni@gmail.com',
+                'created_at' => now(),
+                'updated_at' => now(),
+                // 'timestamps' => now(),
+            ],
+            [
+                'nip' => '1271928121902910231',
+                'nama' => "Ani",
+                'email_dosen' => 'ani1234@gmail.com',
+                'created_at' => now(),
+                'updated_at' => now(),
+                // 'timestamps' => now(),
             ],
             
         ];

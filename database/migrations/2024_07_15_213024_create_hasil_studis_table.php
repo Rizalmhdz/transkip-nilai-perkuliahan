@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode_mata_kuliah');
             $table->foreign('kode_mata_kuliah')->references('kode_mata_kuliah')->on('mata_kuliahs'); 
-            $table->string('id_rencana_studi');
+            $table->unsignedBigInteger('id_rencana_studi');
             $table->foreign('id_rencana_studi')->references('id')->on('rencana_studis'); 
             $table->unsignedBigInteger('nilai');
             $table->enum('status', ['lulus', 'tidak lulus']);
