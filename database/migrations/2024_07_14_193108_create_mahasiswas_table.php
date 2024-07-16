@@ -15,14 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('nim')->unique();
             $table->string('nama_lengkap');
+            $table->date('tempat_lahir');
             $table->date('tanggal_lahir');
-            $table->text('alamat');
             $table->integer('angkatan');
-            // $table->integer('semester');
-
-            // Foreign key custom column
-            $table->string('email_mhs');
-            $table->foreign('email_mhs')->references('email')->on('users'); // References 'id' column on 'users' table
             $table->string('dosen_akademik');
             $table->foreign('dosen_akademik')->references('nip')->on('dosens'); // References 'id' column on 'users' table
 

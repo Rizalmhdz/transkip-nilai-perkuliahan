@@ -19,6 +19,8 @@ return new class extends Migration
             $table->enum('semester', ['ganjil', 'genap']);
             $table->string('dosen_pengampu');
             $table->foreign('dosen_pengampu')->references('nip')->on('dosens');
+            $table->string('prodi');
+            $table->foreign('prodi')->references('id')->on('prodis');
             $table->timestamps();
         });
     }

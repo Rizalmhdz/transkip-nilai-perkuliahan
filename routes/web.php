@@ -36,7 +36,10 @@ require __DIR__.'/auth.php';
 
 
 
-Route::resource('matakuliah', MataKuliahController::class);
+Route::get('/mata-kuliah', [MataKuliahController::class, 'index'])->name('mata-kuliah');
+Route::get('/mata-kuliah/{id}/edit', [MataKuliahController::class, 'edit'])->name('mata-kuliah.edit');
+Route::put('/mata-kuliah/{id}', [MataKuliahController::class, 'update'])->name('mata-kuliah.update');
+Route::delete('/mata-kuliah/{id}', [MataKuliahController::class, 'destroy'])->name('mata-kuliah.destroy');
 
 Route::get('/dashboard', function () {
             return view('dashboard');
