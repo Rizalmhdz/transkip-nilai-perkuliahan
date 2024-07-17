@@ -5,18 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Dosen extends Model
+class Prodi extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nama',
-        'nidn',
-        'email_dosen',
+        'nama_prodi',
+        'ketua_prodi',
     ];
 
     public function mataKuliahs()
     {
-        return $this->hasMany(MataKuliah::class, 'dosen_pengampu', 'nidn');
+        return $this->hasMany(MataKuliah::class, 'prodi', 'id');
     }
 }

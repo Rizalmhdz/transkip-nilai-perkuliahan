@@ -25,21 +25,13 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 
-// routes/web.php
+Route::get('/mata-kuliah', [MataKuliahController::class, 'index'])->name('mata-kuliah.index');
+Route::get('/mata-kuliah/create', [MataKuliahController::class, 'create'])->name('mata-kuliah.create');
+Route::post('/mata-kuliah', [MataKuliahController::class, 'store'])->name('mata-kuliah.store');
+Route::get('/mata-kuliah/{mataKuliah}/edit', [MataKuliahController::class, 'edit'])->name('mata-kuliah.edit');
+Route::put('/mata-kuliah/{mataKuliah}', [MataKuliahController::class, 'update'])->name('mata-kuliah.update');
+Route::delete('/mata-kuliah/{mataKuliah}', [MataKuliahController::class, 'destroy'])->name('mata-kuliah.destroy');
 
-// Route::get('/dashboard', [DashboardController::class, 'view'])->name('dashboard');
-// Route::get('/mata-kuliah', [MataKuliahController::class, 'view'])->name('mata-kuliah');
-// Route::get('/dosen', [DosenController::class, 'view'])->name('dosen');
-// Route::get('/mahasiswa', [MahasiswaController::class, 'view'])->name('mahasiswa');
-// Route::get('/report', [ReportController::class, 'view'])->name('report');
-// Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
-
-
-
-Route::get('/mata-kuliah', [MataKuliahController::class, 'index'])->name('mata-kuliah');
-Route::get('/mata-kuliah/{id}/edit', [MataKuliahController::class, 'edit'])->name('mata-kuliah.edit');
-Route::put('/mata-kuliah/{id}', [MataKuliahController::class, 'update'])->name('mata-kuliah.update');
-Route::delete('/mata-kuliah/{id}', [MataKuliahController::class, 'destroy'])->name('mata-kuliah.destroy');
 
 Route::get('/dashboard', function () {
             return view('dashboard');

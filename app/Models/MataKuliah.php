@@ -4,28 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\KategoriMatkul;
+use App\Models\Prodi;
 
 class MataKuliah extends Model
 {
     use HasFactory;
 
-    protected $table = 'mata_kuliahs'; // Nama tabel di database
-
     protected $fillable = [
-        'kode_mata_kuliah',
         'nama_mata_kuliah',
         'sks',
-        'semester',
+        'kategori_matkul',
         'dosen_pengampu',
+        'prodi',
     ];
+
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class, 'prodi');
+    }
 
     public function dosen()
     {
-        return $this->belongsTo(Dosen::class, 'dosen_pengampu', 'nip');
+        return $this->belongsTo(Dosen::class, 'dosen_pengampu', 'nidn');
     }
 
-    public function hasilStudis()
+    public function kategori()
     {
-        return $this->hasMany(HasilStudi::class, 'kode_mata_kuliah', 'kode_mata_kuliah');
+        return $this->belongsTo(KategoriMatkul::class, 'kategori_matkul', 'kode_kategori');
     }
+    
 }
