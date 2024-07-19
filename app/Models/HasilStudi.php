@@ -9,22 +9,19 @@ class HasilStudi extends Model
 {
     use HasFactory;
 
-    protected $table = 'hasil_studis'; // Nama tabel di database
-
     protected $fillable = [
-        'kode_mata_kuliah',
-        'id_rencana_studi',
+        'id_mata_kuliah',
+        'nim',
         'nilai',
-        'status',
     ];
 
     public function mataKuliah()
     {
-        return $this->belongsTo(MataKuliah::class, 'kode_mata_kuliah', 'kode_mata_kuliah');
+        return $this->belongsTo(MataKuliah::class, 'id_mata_kuliah');
     }
 
-    public function rencanaStudi()
+    public function mahasiswa()
     {
-        return $this->belongsTo(RencanaStudi::class, 'id_rencana_studi', 'id');
+        return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
     }
 }

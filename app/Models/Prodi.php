@@ -14,7 +14,17 @@ class Prodi extends Model
         'ketua_prodi',
     ];
 
-    public function mataKuliahs()
+    public function ketua()
+    {
+        return $this->belongsTo(Dosen::class, 'ketua_prodi', 'nidn');
+    }
+
+    public function dosenProdis()
+    {
+        return $this->hasMany(DosenProdi::class, 'prodi', 'id');
+    }
+
+    public function mataKuliah()
     {
         return $this->hasMany(MataKuliah::class, 'prodi', 'id');
     }

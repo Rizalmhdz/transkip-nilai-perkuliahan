@@ -33,5 +33,10 @@ class MataKuliah extends Model
     {
         return $this->belongsTo(KategoriMatkul::class, 'kategori_matkul', 'kode_kategori');
     }
+
+    public function hasilStudi()
+    {
+        return $this->hasMany(HasilStudi::class, 'id_mata_kuliah', 'id');
+    }
     
 }

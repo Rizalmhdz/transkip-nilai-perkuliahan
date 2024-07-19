@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Dosen;
+use App\Models\Direktur;
 
 class DirekturSeeder extends Seeder
 {
@@ -13,17 +15,23 @@ class DirekturSeeder extends Seeder
      */
     public function run(): void
     {
-        $direkturs = [
-        [
-            'nidn' => '0133456789',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-        
-    ];
+        $dosen = Dosen::inRandomOrder()->first();
 
-    // Insert data menggunakan DB facade
-    DB::table('direkturs')->insert($direkturs);
+        Direktur::create([
+            'nidn' => $dosen->nidn,
+        ]);
+
+        // $direkturs = [
+        // [
+        //     'nidn' => '0133456789',
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ],
+        
+    // ];
+
+    // // Insert data menggunakan DB facade
+    // DB::table('direkturs')->insert($direkturs);
 
     }
 }

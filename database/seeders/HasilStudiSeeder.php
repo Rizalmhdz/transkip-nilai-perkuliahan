@@ -5,6 +5,10 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\MataKuliah;
+use App\Models\Mahasiswa;
+use App\Models\HasilStudi;
+use Faker\Factory as Faker;
 
 class HasilStudiSeeder extends Seeder
 {
@@ -14,33 +18,18 @@ class HasilStudiSeeder extends Seeder
     public function run(): void
     {
 
-        $hasil_studis = [
-            [
-                'id_mata_kuliah' => 1,
-                'nim' => '1234567891',
-                'nilai' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id_mata_kuliah' => 2,
-                'nim' => '1234567891',
-                'nilai' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id_mata_kuliah' => 3,
-                'nim' => '1234567891',
-                'nilai' => 4,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-           
-            
-        ];
+        $faker = Faker::create('id_ID');
+        $mataKuliahs = MataKuliah::all();
+        $mahasiswas = Mahasiswa::all();
 
-        // Insert data menggunakan DB facade
-        DB::table('hasil_studis')->insert($hasil_studis);
+        foreach ($mahasiswas as $mahasiswa) {
+            foreach ($mataKuliahs as $mataKuliah) {
+                HasilStudi::create([
+                    'id_mata_kuliah' => $mataKuliah->id,
+                    'nim' => $mahasiswa->nim,
+                    'nilai' => $faker->randomFloat(2, 0, 4),
+                ]);
+            }
+        }
     }
 }

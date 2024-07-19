@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\User;
+use Faker\Factory as Faker;
 
 class UserSeeder extends Seeder
 {
@@ -15,6 +17,22 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+
+        $faker = Faker::create('id_ID');
+
+        $domains = ['@gmail.com', '@yahoo.com', '@outlook.com'];
+
+        for ($i = 0; $i < 20; $i++) {
+            $email = $faker->unique()->userName . $faker->randomElement($domains);
+            User::create([
+                'name' => $faker->name,
+                'email' => $email,
+                'email_verified_at' => now(),
+                'password' => Hash::make('password'), // Sesuaikan password default
+                'level' => 2,
+                'remember_token' => Str::random(10),
+            ]);
+        }
 
         $users = [
             [
@@ -27,16 +45,7 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'name' => 'syahroni',
-                'email' => 'syahroni@gmail.com',
-                'email_verified_at' => now(),
-                'password' => Hash::make('syahroni123'),
-                'remember_token' => Str::random(20),
-                'level' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            
             [
                 'name' => 'ani',
                 'email' => 'ani1234@gmail.com',
@@ -47,32 +56,46 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            
-            [
-                'name' => 'Noval',
-                'email' => 'Noval@gmail.com',
-                'email_verified_at' => now(),
-                'password' => Hash::make('NovalNoval'),
-                'remember_token' => Str::random(20),
-                'level' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'name' => 'Handoko',
-                'email' => 'Handoko@gmail.com',
-                'email_verified_at' => now(),
-                'password' => Hash::make('NovalNoval'),
-                'remember_token' => Str::random(20),
-                'level' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            
         ];
+        //     [
+        //         'name' => 'syahroni',
+        //         'email' => 'syahroni@gmail.com',
+        //         'email_verified_at' => now(),
+        //         'password' => Hash::make('syahroni123'),
+        //         'remember_token' => Str::random(20),
+        //         'level' => 2,
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
+            
+            
+        //     [
+        //         'name' => 'Noval',
+        //         'email' => 'Noval@gmail.com',
+        //         'email_verified_at' => now(),
+        //         'password' => Hash::make('NovalNoval'),
+        //         'remember_token' => Str::random(20),
+        //         'level' => 2,
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
 
-        // Insert data menggunakan DB facade
+        //     [
+        //         'name' => 'Handoko',
+        //         'email' => 'Handoko@gmail.com',
+        //         'email_verified_at' => now(),
+        //         'password' => Hash::make('NovalNoval'),
+        //         'remember_token' => Str::random(20),
+        //         'level' => 2,
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
+            
+        // ];
+
+        // // Insert data menggunakan DB facade
         DB::table('users')->insert($users);
+
+        
     }
 }

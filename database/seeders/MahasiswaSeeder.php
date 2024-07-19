@@ -6,6 +6,11 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use App\Models\Dosen;
+use App\Models\Mahasiswa;
+use Illuminate\Support\Str;
+
+use Faker\Factory as Faker;
 
 class MahasiswaSeeder extends Seeder
 {
@@ -15,31 +20,19 @@ class MahasiswaSeeder extends Seeder
     public function run(): void
     {
 
-            $mahasiswas = [
-                [
-                    'nim' => '1234567891',
-                    'nama_lengkap' => 'Bambang Santoso',
-                    'tempat_lahir' => 'Banjarmasin',
-                    'tanggal_lahir' => '2001-01-01',
-                    'angkatan' => '2019',
-                    'dosen_akademik' => '1234567890',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'nim' => '1234567892',
-                    'nama_lengkap' => 'raisa',
-                    'tempat_lahir' => 'Muara Teweh',
-                    'tanggal_lahir' => '2004-01-01',
-                    'angkatan' => '2022',
-                    'dosen_akademik' => '0123456789',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                
-            ];
-    
-            // Insert data menggunakan DB facade
-            DB::table('mahasiswas')->insert($mahasiswas);
+           
+        $faker = Faker::create('id_ID');
+        $dosens = Dosen::all();
+
+        for ($i = 0; $i < 200; $i++) {
+            Mahasiswa::create([
+                'nim' => $faker->unique()->numerify('##########'),
+                'nama_lengkap' => $faker->name,
+                'tempat_lahir' => $faker->city,
+                'tanggal_lahir' => $faker->dateTimeBetween('1998-01-01', '2005-12-31')->format('Y-m-d'),
+                'angkatan' => $faker->numberBetween(2016, 2024),
+                'dosen_akademik' => $dosens->random()->nidn,
+            ]);
+        }
     }
 }

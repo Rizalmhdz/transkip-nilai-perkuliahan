@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('nama');
             $table->string('nidn', 10)->unique();
             $table->string('email_dosen');
-            $table->foreign('email_dosen')->references('email')->on('users');
+            $table->foreign('email_dosen')->references('email')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
+        
     }
 
     /**
@@ -28,4 +29,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('dosens');
     }
+    
 };

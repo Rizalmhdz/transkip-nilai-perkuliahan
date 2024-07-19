@@ -14,7 +14,7 @@ class KategoriMatkul extends Model
         'kode_kategori',
     ];
 
-    public function mataKuliahs()
+    public function mataKuliah()
     {
         return $this->hasMany(MataKuliah::class, 'kategori_matkul', 'kode_kategori');
     }

@@ -5,6 +5,9 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\KategoriMatkul;
+use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 
 class KategoriMatkulSeeder extends Seeder
 {
@@ -13,41 +16,13 @@ class KategoriMatkulSeeder extends Seeder
      */
     public function run(): void
     {
-        $kategori_matkuls = [
-        [
-            'nama_kategori' => 'MPK',
-            'kode_kategori' => 'MPK',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-        [
-            'nama_kategori' => 'MKK',
-            'kode_kategori' => 'MKK',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-        [
-            'nama_kategori' => 'MKB',
-            'kode_kategori' => 'MKB',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-        [
-            'nama_kategori' => 'MPB',
-            'kode_kategori' => 'MPB',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-        [
-            'nama_kategori' => 'MBB',
-            'kode_kategori' => 'MBB',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-    ];
-    
-    // Insert data menggunakan DB facade
-    DB::table('kategori_matkuls')->insert($kategori_matkuls);
+        $faker = Faker::create('id_ID');
 
+        for ($i = 0; $i < 10; $i++) {
+            KategoriMatkul::create([
+                'nama_kategori' => $faker->word,
+                'kode_kategori' => 'M' . strtoupper($faker->unique()->lexify('??')),
+            ]);
+        }
     }
 }

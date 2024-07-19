@@ -5,6 +5,10 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\KaryaTulis;
+use App\Models\Mahasiswa;
+use App\Models\Dosen;
+use Faker\Factory as Faker;
 
 class KaryaTulisSeeder extends Seeder
 {
@@ -13,28 +17,17 @@ class KaryaTulisSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create('id_ID');
+        $mahasiswas = Mahasiswa::all();
+        $dosens = Dosen::all();
 
-        $karya_tuliss = [
-            [
-                'judul' => 'Judul 1',
-                'nim' => '1234567891',
-                'pembimbing' => '1234567890',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'judul' => 'Judul 2',
-                'nim' => '1234567892',
-                'pembimbing' => '0123456789',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ];
-        
-        // Insert data menggunakan DB facade
-        DB::table('karya_tuliss')->insert($karya_tuliss);
-    
-    }
-        
+        foreach ($mahasiswas as $mahasiswa) {
+            KaryaTulis::create([
+                'judul' => $faker->unique()->sentence . ' di Indonesia',
+                'nim' => $mahasiswa->nim,
+                'pembimbing' => $dosens->random()->nidn,
+            ]);
+        }
+    }   
     
 }

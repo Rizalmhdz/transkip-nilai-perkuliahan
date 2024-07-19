@@ -5,6 +5,11 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\KategoriMatkul;
+use App\Models\Dosen;
+use App\Models\Prodi;
+use App\Models\MataKuliah;
+use Faker\Factory as Faker;
 
 class MataKuliahSeeder extends Seeder
 {
@@ -13,37 +18,19 @@ class MataKuliahSeeder extends Seeder
      */
     public function run(): void
     {
-        $mata_kuliahs = [
-            [
-                'nama_mata_kuliah' => 'Mata Kuliah 1',
-                'sks' => 3,
-                'kategori_matkul' => 'MKB',
-                'dosen_pengampu' => '1234567890',
-                'prodi' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama_mata_kuliah' => 'Mata Kuliah 2',
-                'sks' => 3,
-                'kategori_matkul' => 'MKK',
-                'dosen_pengampu' => '1234567890',
-                'prodi' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama_mata_kuliah' => 'Mata Kuliah 1',
-                'sks' => 3,
-                'kategori_matkul' => 'MPB',
-                'dosen_pengampu' => '0113456789',
-                'prodi' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ];
+        $faker = Faker::create('id_ID');
+        $kategoriMatkuls = KategoriMatkul::all();
+        $dosens = Dosen::all();
+        $prodis = Prodi::all();
 
-        // Insert data menggunakan DB facade
-        DB::table('mata_kuliahs')->insert($mata_kuliahs);
+        for ($i = 0; $i < 50; $i++) {
+            MataKuliah::create([
+                'nama_mata_kuliah' => $faker->word,
+                'sks' => $faker->numberBetween(2, 4),
+                'kategori_matkul' => $kategoriMatkuls->random()->kode_kategori,
+                'dosen_pengampu' => $dosens->random()->nidn,
+                'prodi' => $prodis->random()->id,
+            ]);
+        }
     }
 }

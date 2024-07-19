@@ -1,0 +1,411 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dosen') }}
+        </h2>
+    </x-slot>
+
+    <head>
+        <style>
+            .modal-title {
+                text-align: center;
+                text-transform: capitalize;
+                width: 100%;
+            }
+
+            .modal-header {
+                display: flex;
+                font-weight: bold;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .modal-header .close {
+                position: absolute;
+                right: 15px;
+            }
+
+            .form-control {
+                border: 1px solid #ced4da;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            .table thead th {
+                border-bottom: 2px solid #dee2e6;
+                text-align: center;
+            }
+
+            .table td,
+            .table th {
+                border: none;
+                text-align: center;
+            }
+
+            .action-buttons .btn {
+                margin-bottom: 0.5rem;
+            }
+
+            .action-buttons .btn+.btn {
+                margin-left: 0.5rem;
+            }
+
+            .modal-body,
+            .modal-footer {
+                text-align: left;
+            }
+
+            .pagination .page-link:hover {
+                background-color: #343a40;
+                color: #fff;
+            }
+
+            .input-group .form-control {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+
+            .input-group .input-group-append .btn {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
+            .invalid-feedback {
+                display: none;
+                color: red;
+            }
+
+            .is-invalid {
+                border-color: red;
+            }
+        </style>
+    </head>
+
+    <div>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-center">
+                    <h3>Dosen</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
+            <div class="container">
+                <div class="row mb-3 d-flex justify-content-between">
+                    <div class="col-12 col-md-9 mb-2 mb-md-0">
+                        <button class="btn btn-primary me-2" data-toggle="modal" data-target="#createModal">
+                            <i class="fa fa-plus"></i> Tambah Data
+                        </button>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 mb-2">
+                        <div class="table-responsive mb-3">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>
+                                            <a href="?sort=nama&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
+                                                Nama
+                                                <i class="ms-3 fa fa-sort{{ request('sort') == 'nama' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sort=nidn&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
+                                                NIDN
+                                                <i class="ms-3 fa fa-sort{{ request('sort') == 'nidn' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sort=email_dosen&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
+                                                Email
+                                                <i class="ms-3 fa fa-sort{{ request('sort') == 'email_dosen' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
+                                            </a>
+                                        </th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($dosens as $index => $dosen)
+                                    <tr>
+                                        <td>{{ $index + 1 + ($dosens->currentPage() - 1) * $dosens->perPage() }}</td>
+                                        <td>{{ $dosen->nama }}</td>
+                                        <td>{{ $dosen->nidn }}</td>
+                                        <td>{{ $dosen->email_dosen }}</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-warning ms-2" data-toggle="modal"
+                                                data-target="#editModal{{ $dosen->id }}"
+                                                onclick="editDosen({{ $dosen->id }}, '{{ $dosen->nama }}', '{{ $dosen->nidn }}', '{{ $dosen->email_dosen }}')">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger" data-toggle="modal"
+                                                data-target="#deleteModal{{ $dosen->id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+
+                                            <!-- Edit Modal -->
+                                            <div class="modal fade" id="editModal{{ $dosen->id }}" tabindex="-1"
+                                                role="dialog" aria-labelledby="editModalLabel{{ $dosen->id }}"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h3 class="modal-title font-weight-bold"
+                                                                id="editModalLabel{{ $dosen->id }}">Edit Dosen</h3>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form id="editForm{{ $dosen->id }}"
+                                                                action="{{ route('dosen.update', $dosen->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <div class="form-group mb-3">
+                                                                    <label for="edit_nama{{ $dosen->id }}"
+                                                                        class="font-weight-bold">Nama</label>
+                                                                    <input type="text"
+                                                                        class="form-control rounded"
+                                                                        id="edit_nama{{ $dosen->id }}"
+                                                                        name="nama" required>
+                                                                </div>
+                                                                <div class="form-group mb-3">
+                                                                    <label for="edit_nidn{{ $dosen->id }}"
+                                                                        class="font-weight-bold">NIDN</label>
+                                                                    <input type="text"
+                                                                        class="form-control rounded"
+                                                                        id="edit_nidn{{ $dosen->id }}"
+                                                                        name="nidn" required>
+                                                                    <div class="invalid-feedback"
+                                                                        id="edit_nidn_feedback{{ $dosen->id }}">
+                                                                        NIDN harus berupa angka dan harus 10 karakter.
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group mb-3">
+                                                                    <label for="edit_email_dosen{{ $dosen->id }}"
+                                                                        class="font-weight-bold">Email</label>
+                                                                    <select class="form-control rounded"
+                                                                        id="edit_email_dosen{{ $dosen->id }}"
+                                                                        name="email_dosen" required>
+                                                                        <option value="{{ $dosen->email_dosen }}">
+                                                                            {{ $dosen->email_dosen }}
+                                                                        </option>
+                                                                        @foreach($availableEmails as $email)
+                                                                        <option value="{{ $email }}">{{ $email }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    <button type="button" class="btn btn-link"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#addEmailModal">Tambahkan Email
+                                                                        Baru</button>
+                                                                </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Batalkan</button>
+                                                            <button type="submit" class="btn btn-primary"
+                                                                id="edit_submit{{ $dosen->id }}">Ubah</button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Delete Modal -->
+                                            <div class="modal fade" id="deleteModal{{ $dosen->id }}" tabindex="-1"
+                                                role="dialog" aria-labelledby="deleteModalLabel{{ $dosen->id }}"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title"
+                                                                id="deleteModalLabel{{ $dosen->id }}">Konfirmasi
+                                                                Penghapusan</h5>
+                                                            <button type="button" class="close"
+                                                                data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Apakah Anda Yakin Ingin Menghapus Data
+                                                            "{{ $dosen->nama }}"?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Batalkan</button>
+                                                            <form action="{{ route('dosen.destroy', $dosen->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger">Hapus</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                {{ $dosens->links() }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Modal -->
+                <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title font-weight-bold" id="createModalLabel">Tambah Dosen</h3>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="createForm" action="{{ route('dosen.store') }}" method="POST">
+                                    @csrf
+                                    <div class="form-group mb-3">
+                                        <label for="nama" class="font-weight-bold">Nama</label>
+                                        <input type="text" class="form-control rounded" id="nama" name="nama" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="nidn" class="font-weight-bold">NIDN</label>
+                                        <input type="text" class="form-control rounded" id="nidn" name="nidn" required>
+                                        <div class="invalid-feedback" id="nidn_feedback">NIDN harus berupa angka dan
+                                            harus 10 karakter.</div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="email_dosen" class="font-weight-bold">Email</label>
+                                        <select class="form-control rounded" id="email_dosen" name="email_dosen" required>
+                                            @foreach($availableEmails as $email)
+                                            <option value="{{ $email }}">{{ $email }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="button" class="btn btn-link" data-bs-toggle="modal"
+                                            data-bs-target="#addEmailModal">Tambahkan Email Baru</button>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batalkan</button>
+                                <button type="submit" class="btn btn-primary" id="create_submit">Tambahkan</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Email Modal -->
+                <div class="modal fade" id="addEmailModal" tabindex="-1" aria-labelledby="addEmailModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addEmailModalLabel">Tambahkan Email Baru</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addEmailForm" action="{{ route('user.store') }}" method="POST">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="new_email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="new_email" name="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="new_name" class="form-label">Nama</label>
+                                        <input type="text" class="form-control" id="new_name" name="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="new_password" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="new_password" name="password" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Tambahkan</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Include jQuery and Bootstrap JS -->
+                <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+                <script>
+                $(document).ready(function () {
+                    // Clear form fields on modal close
+                    $('#createModal').on('hidden.bs.modal', function () {
+                        $('#createForm')[0].reset();
+                        $('#nidn').removeClass('is-invalid');
+                        $('#nidn_feedback').hide();
+                        $('#create_submit').prop('disabled', false);
+                    });
+
+                    $('#editModal').on('hidden.bs.modal', function () {
+                        $(this).find('form')[0].reset();
+                        $('[id^=edit_nidn]').removeClass('is-invalid');
+                        $('[id^=edit_nidn_feedback]').hide();
+                        $('button[type="submit"]').prop('disabled', false);
+                    });
+
+                    window.editDosen = function (id, nama, nidn, email_dosen) {
+                        $('#edit_nama' + id).val(nama);
+                        $('#edit_nidn' + id).val(nidn);
+                        $('#edit_email_dosen' + id).val(email_dosen);
+                    }
+
+                    $('#searchButton').on('click', function () {
+                        const keyword = $('#searchKeyword').val().toLowerCase();
+                        $('table tbody tr').filter(function () {
+                            $(this).toggle($(this).text().toLowerCase().indexOf(keyword) > -1)
+                        });
+                    });
+
+                    // Validasi NIDN
+                    $('#nidn').on('input', function () {
+                        const nidn = $(this).val();
+                        const isValid = /^\d{10}$/.test(nidn);
+                        if (isValid) {
+                            $(this).removeClass('is-invalid');
+                            $('#nidn_feedback').hide();
+                            $('#create_submit').prop('disabled', false);
+                        } else {
+                            $(this).addClass('is-invalid');
+                            $('#nidn_feedback').show();
+                            $('#create_submit').prop('disabled', true);
+                        }
+                    });
+
+                    $('[id^=edit_nidn]').on('input', function () {
+                        const id = $(this).attr('id').replace('edit_nidn', '');
+                        const nidn = $(this).val();
+                        const isValid = /^\d{10}$/.test(nidn);
+                        if (isValid) {
+                            $(this).removeClass('is-invalid');
+                            $('#edit_nidn_feedback' + id).hide();
+                            $('#edit_submit' + id).prop('disabled', false);
+                        } else {
+                            $(this).addClass('is-invalid');
+                            $('#edit_nidn_feedback' + id).show();
+                            $('#edit_submit' + id).prop('disabled', true);
+                        }
+                    });
+                });
+                </script>
+
+            </div>
+        </div>
+
+</x-app-layout>

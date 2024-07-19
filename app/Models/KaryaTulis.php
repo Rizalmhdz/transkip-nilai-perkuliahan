@@ -5,19 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RencanaStudi extends Model
+class KaryaTulis extends Model
 {
     use HasFactory;
 
-    protected $table = 'rencana_studis'; // Nama tabel di database
-
+    protected $table = 'karya_tuliss'; // Pastikan ini sudah benar
+    
     protected $fillable = [
+        'judul',
         'nim',
-        'tahun_ajaran',
-        'semester',
-        'status',
-        'sks_tersedia',
-        'sks_selanjutnya',
+        'pembimbing',
     ];
 
     public function mahasiswa()
@@ -25,8 +22,8 @@ class RencanaStudi extends Model
         return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
     }
 
-    public function hasilStudis()
+    public function pembimbing()
     {
-        return $this->hasMany(HasilStudi::class, 'id_rencana_studi', 'id');
+        return $this->belongsTo(Dosen::class, 'pembimbing', 'nidn');
     }
 }

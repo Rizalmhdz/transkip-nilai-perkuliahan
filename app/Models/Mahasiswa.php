@@ -9,25 +9,22 @@ class Mahasiswa extends Model
 {
     use HasFactory;
 
-    protected $table = 'mahasiswas'; // Nama tabel di database
-
     protected $fillable = [
         'nim',
         'nama_lengkap',
+        'tempat_lahir',
         'tanggal_lahir',
-        'alamat',
         'angkatan',
-        'email_mhs',
         'dosen_akademik',
     ];
 
-    public function dosen()
+    public function dosenAkademik()
     {
-        return $this->belongsTo(Dosen::class, 'dosen_akademik', 'nip');
+        return $this->belongsTo(Dosen::class, 'dosen_akademik', 'nidn');
     }
 
-    public function rencanaStudis()
+    public function hasilStudi()
     {
-        return $this->hasMany(RencanaStudi::class, 'nim', 'nim');
+        return $this->hasMany(HasilStudi::class, 'nim', 'nim');
     }
 }
