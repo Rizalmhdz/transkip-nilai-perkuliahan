@@ -13,7 +13,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
-                    <div class="col-12 col-md-9 mb-2 mb-md-0">
+                    <div class="col-12 col-md-6 mb-2 mb-md-0">
                         @if ($authority_level == 1)
                             <button class="btn btn-primary me-2" data-toggle="modal" data-target="#createModal">
                                 <i class="fa fa-plus"></i> Tambah Data
@@ -22,13 +22,26 @@
                                 <i class="fa fa-filter"></i> Filter
                             </button>
                         @else
-                        <h2 class="font-semibold text-sm text-gray-600 leading-tight align-text-bottom">
-                           # Berikut Data Hasil Studi yang Anda Ampu 
-                        </h2>
+                            <button class="btn btn-secondary me-2" data-toggle="modal" data-target="#filterModal">
+                                <i class="fa fa-filter"></i> Filter
+                            </button>
                         @endif
+                        
+                        <button type="button" class="btn btn-danger" onclick="window.location.href='{{ route('hasil-studi.index') }}'">Hapus Filter</button>
                     </div>
-                    <div class="col-12 col-md-3 d-md-flex justify-content-end justify-content-md-end">
-                        <button type="button" class="btn btn-outline-dark"> Total Data : {{ $total }}</button>
+                    <div class="col-12 col-md-6 d-md-flex justify-content-end justify-content-md-end">
+                        @if($isPrint)
+                        <div class="text-gray-600 me-3">
+                            <div>IPK: {{ $ipk }}</div>
+                            <div>Total SKS: {{ $totalSks }}</div>
+                        </div>
+                        @endif
+                        
+                        <button type="button" class="btn btn-outline-dark me-2"> Total Data : {{ $total }}</button>
+                        @if($isPrint)
+                        <button type="button" class="btn btn-success" onclick="window.location.href='{{ route('cetak-rekap-nilai', ['nim' => $mahasiswas[0]->nim]) }}'">
+                            <i class="fa fa-print me-2"></i> CETAK REKAP NILAI</button>
+                        @endif
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -46,6 +59,7 @@
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'nilai' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
+                                        <th>Angka</th>
                                         <th>SKS</th>
                                         <th>Mata Kuliah</th>
                                         <th>Dosen Pengampu</th>
@@ -63,11 +77,30 @@
                                         <td>{{ $hasil_studi->mahasiswa->nama_lengkap }}</td>
                                         <td>{{ $hasil_studi->nim }}</td>
                                         <td>{{ $hasil_studi->nilai }}</td>
+                                        <td>
+                                            @switch($hasil_studi->nilai)
+                                                @case(4)
+                                                    A
+                                                    @break
+                                                @case(3)
+                                                    B
+                                                    @break
+                                                @case(2)
+                                                    C
+                                                    @break
+                                                @case(1)
+                                                    D
+                                                    @break
+                                                @default
+                                                    E
+                                            @endswitch
+                                        </td>
+                                        
                                         <td>{{ $hasil_studi->mataKuliah->sks }}</td>
                                         <td>{{ $hasil_studi->mataKuliah->nama_mata_kuliah }}</td>
                                         <td>{{ $hasil_studi->mataKuliah->dosen->nama }}</td>
                                         <td class="action-buttons">
-                                            <button class="btn btn-warning ms-2" data-toggle="modal"
+                                            <button class="btn btn-{{  $user_dosen_id != '' &&  $user_dosen_id === $hasil_studi->mataKuliah->dosen->nidn ? '' : 'outlined-'}}warning ms-2" data-toggle="modal" {{  $user_dosen_id != '' &&  $user_dosen_id === $hasil_studi->mataKuliah->dosen->nidn ? '' : 'disabled'}}
                                                 data-target="#editModal{{ $hasil_studi->id }}"
                                                 onclick="editHasilStudi({{ $hasil_studi->id }}, '{{ $hasil_studi->nilai }}')">
                                                 <i class="fa fa-edit"></i>
@@ -190,7 +223,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-between">
+                        <div class="col-12 mb-2">
                             <div>
                                 {{ $hasil_studis->links() }}
                             </div>
@@ -302,6 +335,16 @@
                                             <option value="0">E - 0</option>
                                         </select>
                                     </div>
+                                    @if ($authority_level == 2)
+                                        <div class="form-group mb-3">
+                                            <label for="filter_type" class="font-weight-bold">Filter Type</label>
+                                            <select name="filter_type" id="filter_type" class="form-control rounded">
+                                                <option value="">Pilih Type</option>
+                                                <option value="bimbingan">Mahasiswa Bimbingan</option>
+                                                <option value="pengampu">Dosen Pengampu</option>
+                                            </select>
+                                        </div>
+                                    @endif
                                 </form>
                             </div>
                             <div class="modal-footer">

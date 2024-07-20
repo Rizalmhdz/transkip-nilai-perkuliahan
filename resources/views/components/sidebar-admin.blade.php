@@ -28,12 +28,12 @@
             </a>
         </li>
         @endif
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ route('dosen-prodi.index') }}" class="nav-link {{ request()->routeIs('dosen-prodi.index') ? 'active bg-dark text-white' : 'text-dark' }}">
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span class="ms-2 d-none d-md-inline">Dosen Prodi</span>
             </a>
-        </li>
+        </li> --}}
         @if($authority_level == 1)
         <li class="nav-item">
             <a href="{{ route('direktur.index') }}" class="nav-link {{ request()->routeIs('direktur.index') ? 'active bg-dark text-white' : 'text-dark' }}">

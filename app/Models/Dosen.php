@@ -7,13 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dosen extends Model
 {
-
     use HasFactory;
 
     protected $fillable = [
-        'nama',
-        'nidn',
-        'email_dosen',
+        'nama', 'nidn', 'email_dosen',
     ];
 
     public function user()
@@ -21,46 +18,18 @@ class Dosen extends Model
         return $this->belongsTo(User::class, 'email_dosen', 'email');
     }
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($dosen) {
-            $user = User::where('email', $dosen->email_dosen)->first();
-            if ($user) {
-                $dosen->nama = $user->name;
-            }
-        });
-    }
-
-    public function prodi()
-    {
-        return $this->hasOne(Prodi::class, 'ketua_prodi', 'nidn');
-    }
-
-    public function dosenProdis()
+    public function prodis()
     {
         return $this->hasMany(DosenProdi::class, 'nidn', 'nidn');
     }
 
-    public function direkturs()
+    public function ketuaProdi()
     {
-        return $this->hasMany(Direktur::class, 'nidn', 'nidn');
+        return $this->hasOne(Prodi::class, 'ketua_prodi', 'nidn');
     }
 
-    public function mahasiswaAkademik()
-    {
-        return $this->hasMany(Mahasiswa::class, 'dosen_akademik', 'nidn');
-    }
-
-    public function karyaTulis()
-    {
-        return $this->hasMany(KaryaTulis::class, 'pembimbing', 'nidn');
-    }
-
-    public function mataKuliah()
+    public function mataKuliahs()
     {
         return $this->hasMany(MataKuliah::class, 'dosen_pengampu', 'nidn');
     }
-    
 }

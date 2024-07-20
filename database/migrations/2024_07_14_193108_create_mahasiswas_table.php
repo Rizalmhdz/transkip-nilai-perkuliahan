@@ -4,10 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateMahasiswasTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
     public function up()
     {
@@ -18,18 +20,22 @@ return new class extends Migration
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
             $table->integer('angkatan');
+            $table->unsignedBigInteger('prodi');
+            $table->foreign('prodi')->references('id')->on('prodis');
             $table->string('dosen_akademik');
-            $table->foreign('dosen_akademik')->references('nidn')->on('dosens'); // References 'id' column on 'users' table
-
+            $table->foreign('dosen_akademik')->references('nidn')->on('dosens');
+            $table->year('tahun_lulus')->nullable();
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('mahasiswas');
     }
-};
+}

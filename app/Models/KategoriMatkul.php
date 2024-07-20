@@ -10,11 +10,10 @@ class KategoriMatkul extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_kategori',
-        'kode_kategori',
+        'nama_kategori', 'kode_kategori',
     ];
 
-    public function mataKuliah()
+    public function mataKuliahs()
     {
         return $this->hasMany(MataKuliah::class, 'kategori_matkul', 'kode_kategori');
     }

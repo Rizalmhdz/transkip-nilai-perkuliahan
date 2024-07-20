@@ -15,22 +15,20 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PdfController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('dashboard');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+
+Route::get('/dashboard', [DosenProdiController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-require __DIR__.'/auth.php';
-
-
+    
 #================================================== Mata Kuliah
 Route::get('/mata-kuliah', [MataKuliahController::class, 'index'])->name('mata-kuliah.index');
 Route::get('/mata-kuliah/create', [MataKuliahController::class, 'create'])->name('mata-kuliah.create');
@@ -127,4 +125,8 @@ Route::delete('/hasil-studi/{hasilStudi}', [HasilStudiController::class, 'destro
 
 // =======================  generate PDF
 
-Route::get('/generate-pdf', [PdfController::class, 'generatePdf']);
+Route::get('/generate-pdf', [PdfController::class, 'generatePdf'])->name('cetak-rekap-nilai');
+});
+
+require __DIR__.'/auth.php';
+

@@ -55,13 +55,13 @@
     <div class="container">
         <div class="header">
             <h2>TRANSKRIP NILAI</h2>
-            <p>Nomor: 121/93/{{ substr($student->nim, 0, 5) }}/POLIMAT/{{ date('y') }}</p>
+            <p>Nomor: 121/93/{{ substr($mahasiswa->nim, 0, 5) }}/POLIMAT/{{ date('y') }}</p>
         </div>
         <div class="content">
-            <p>Nama: <b>{{ $student->nama_lengkap }}</b></p>
-            <p>Tempat dan Tanggal Lahir: <b>{{ $student->tempat_lahir }}, {{ $student->tanggal_lahir }}</b></p>
+            <p>Nama: <b>{{ $mahasiswa->nama_lengkap }}</b></p>
+            <p>Tempat dan Tanggal Lahir: <b>{{ $student->tempat_lahir }}, {{ $mahasiswa->tanggal_lahir }}</b></p>
             <p>Nomor Induk Mahasiswa: <b>{{ substr($student->nim, 0, 5) }}.{{ substr($student->nim, 5, 2) }}.{{ substr($student->nim, 7, 3) }}</b></p>
-            <p>Program Studi: <b>{{ $student->prodi->nama_prodi }} (TP)</b></p>
+            <p>Program Studi: <b>{{ $mahasiswa->prodi->nama_prodi }} (TP)</b></p>
             <table>
                 <thead>
                     <tr>

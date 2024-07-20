@@ -10,8 +10,7 @@ class DosenProdi extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nidn',
-        'prodi',
+        'nidn', 'prodi',
     ];
 
     public function dosen()

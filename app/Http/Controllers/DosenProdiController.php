@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\DosenProdi;
 use App\Models\Dosen;
 use App\Models\Prodi;
+use App\Models\Mahasiswa;
+use App\Models\MataKuliah;
+use App\Models\KaryaTulis;
 use Illuminate\Support\Facades\Auth;
 
 class DosenProdiController extends Controller
@@ -19,12 +22,10 @@ class DosenProdiController extends Controller
         $searchKeyword = $request->input('searchKeyword');
         $prodi_id = $request->input('prodi');
         $dosen_id = $request->input('dosen');
-       
 
         $query = DosenProdi::query();
 
         if ($authority_level == 1) {
-           
             if ($searchKeyword) {
                 $query->where('nidn', 'LIKE', "%{$searchKeyword}%")
                     ->orWhereHas('dosen', function($query) use ($searchKeyword) {
@@ -49,18 +50,33 @@ class DosenProdiController extends Controller
             $dosen = Dosen::where('email_dosen', $user->email)->first();
             if ($dosen) {
                 $dosen_prodis = DosenProdi::where('nidn', $dosen->nidn)->paginate(20);
+
+                // Informasi tambahan untuk dashboard
+                $mahasiswaBimbinganAkademik = Mahasiswa::where('dosen_akademik', $dosen->nidn)->count();
+                $mataKuliahDiampu = MataKuliah::where('dosen_pengampu', $dosen->nidn)->count();
+                $mahasiswaBimbinganKaryaTulis = KaryaTulis::where('pembimbing', $dosen->nidn)->count();
             } else {
                 $dosen_prodis = collect(); // Empty collection if dosen not found
+                $mahasiswaBimbinganAkademik = 0;
+                $mataKuliahDiampu = 0;
+                $mahasiswaBimbinganKaryaTulis = 0;
             }
         } else {
             $dosen_prodis = collect(); // Empty collection for other authority levels
+            $mahasiswaBimbinganAkademik = 0;
+            $mataKuliahDiampu = 0;
+            $mahasiswaBimbinganKaryaTulis = 0;
         }
+
+        $mahasiswaBimbinganAkademik = Mahasiswa::all()->count();
+                $mataKuliahDiampu = MataKuliah::all()->count();
+                $mahasiswaBimbinganKaryaTulis = KaryaTulis::all()->count();
         
         $total = $dosen_prodis->total();
         $dosens = Dosen::all();
         $prodis = Prodi::all();
 
-        return view('dosen_prodi_page', compact('dosen_prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'prodis', 'authority_level', 'prodi_id', 'dosen_id'));
+        return view('dosen_prodi_page', compact('dosen_prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'prodis', 'authority_level', 'prodi_id', 'dosen_id', 'mahasiswaBimbinganAkademik', 'mataKuliahDiampu', 'mahasiswaBimbinganKaryaTulis'));
     }
 
     public function create()

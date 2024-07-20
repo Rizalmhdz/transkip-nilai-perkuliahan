@@ -1,16 +1,40 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dosen Prodi') }}
+            {{ __('Dashboard Dosen') }}
         </h2>
     </x-slot>
 
-    <head>
-        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    </head>
-
     <div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
+            <!-- Dashboard Info Section -->
+            @if ($authority_level == 2)
+                <div class="flex flex-wrap justify-around bg-white p-6 rounded-lg shadow-md mb-6">
+                    <div class="flex items-center justify-center p-4 m-2 bg-blue-100 rounded-lg">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold">👨‍🎓</div>
+                            <div class="text-4xl font-bold">{{ $mahasiswaBimbinganAkademik }}</div>
+                            <div class="text-sm text-gray-600">Mahasiswa Bimbingan Akademik</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center p-4 m-2 bg-green-100 rounded-lg">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold">📚</div>
+                            <div class="text-4xl font-bold">{{ $mataKuliahDiampu }}</div>
+                            <div class="text-sm text-gray-600">Mata Kuliah Diampu</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center p-4 m-2 bg-yellow-100 rounded-lg">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold">📜</div>
+                            <div class="text-4xl font-bold">{{ $mahasiswaBimbinganKaryaTulis }}</div>
+                            <div class="text-sm text-gray-600">Mahasiswa Bimbingan Karya Tulis</div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Dosen Prodi Section -->
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
                     <div class="col-12 col-md-9 mb-2 mb-md-0">
@@ -45,9 +69,8 @@
                                             </a>
                                         </th>
                                         <th>
-                                            <a >
+                                            <a>
                                                 Nama
-                                                {{-- <i class="ms-3 fa fa-sort{{ request('sort') == 'nidn' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i> --}}
                                             </a>
                                         </th>
                                         <th>
@@ -70,6 +93,7 @@
                                             @foreach($dosens as $dosen)
                                                 {{ $dosen->nidn == $dosen_prodi->nidn ?  $dosen->nama : ''}}
                                             @endforeach
+                                        </td>
                                         <td>
                                             @foreach($prodis as $prodi)
                                                 {{ $dosen_prodi->prodi == $prodi->id ?  $prodi->nama_prodi : ''}}
@@ -328,5 +352,4 @@
 
             </div>
         </div>
-
 </x-app-layout>

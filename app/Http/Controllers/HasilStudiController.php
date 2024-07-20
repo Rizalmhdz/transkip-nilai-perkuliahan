@@ -15,38 +15,34 @@ class HasilStudiController extends Controller
 {
     public function index(Request $request)
     {
-        $sort = $request->input('sort', 'id_mata_kuliah');
+        $user = Auth::user();
+        $authority_level = $user->level;
+
+        $isPrint = $request->input('isPrint', false);
+        $sort = $request->input('sort', 'nilai');
         $direction = $request->input('direction', 'asc');
         $searchKeyword = $request->input('searchKeyword');
         $prodi_id = $request->input('prodi');
         $mata_kuliah_id = $request->input('mata_kuliah');
         $nim = $request->input('nim');
-        $filter_nilai = $request->input('nilai');
+        $nilai = $request->input('nilai');
+        $filter_type = $request->input('filter_type');
+        $user_dosen_id = null;
 
-        $user = Auth::user();
-        $authority_level = $user->level;
-        
         $query = HasilStudi::query();
 
-        if ($authority_level == 2) {
-            $dosen = Dosen::where('email_dosen', $user->email)->first();
-            if ($dosen) {
-                // Filter by mata kuliah taught by the dosen
-                $query->where(function ($q) use ($dosen) {
-                    $q->whereHas('mataKuliah', function ($q) use ($dosen) {
-                        $q->where('dosen_pengampu', $dosen->nidn);
-                    });
-                });
-
-                // Filter by mahasiswa advised by the dosen
-                $query->orWhereHas('mahasiswa', function ($q) use ($dosen) {
-                    $q->where('dosen_akademik', $dosen->nidn);
-                });
+        if ($authority_level == 1) {
+            if ($searchKeyword) {
+                $query->whereHas('mahasiswa', function($query) use ($searchKeyword) {
+                    $query->where('nama_lengkap', 'LIKE', "%{$searchKeyword}%");
+                })->orWhereHas('mataKuliah', function($query) use ($searchKeyword) {
+                    $query->where('nama_mata_kuliah', 'LIKE', "%{$searchKeyword}%");
+                })->orWhere('nim', 'LIKE', "%{$searchKeyword}%");
             }
-        } else {
+
             if ($prodi_id) {
-                $query->whereHas('mataKuliah', function ($q) use ($prodi_id) {
-                    $q->where('prodi', $prodi_id);
+                $query->whereHas('mataKuliah', function($query) use ($prodi_id) {
+                    $query->where('prodi', $prodi_id);
                 });
             }
 
@@ -58,30 +54,73 @@ class HasilStudiController extends Controller
                 $query->where('nim', $nim);
             }
 
-            if ($filter_nilai !== null) {
-                $query->where('nilai', $filter_nilai);
+            if ($nilai) {
+                $query->where('nilai', $nilai);
+            }
+        } elseif ($authority_level == 2) {
+            $dosen = Dosen::where('email_dosen', $user->email)->first();
+            $user_dosen_id = $dosen->nidn;
+
+            if ($filter_type == 'bimbingan') {
+                $query->whereHas('mahasiswa', function($query) use ($dosen) {
+                    $query->where('dosen_akademik', $dosen->nidn);
+                });
+            } elseif ($filter_type == 'pengampu') {
+                $query->whereHas('mataKuliah', function($query) use ($user_dosen_id) {
+                    $query->where('dosen_pengampu', $user_dosen_id);
+                });
             }
 
             if ($searchKeyword) {
-                $query->where(function ($q) use ($searchKeyword) {
-                    $q->where('nilai', 'LIKE', "%{$searchKeyword}%")
-                        ->orWhereHas('mataKuliah', function ($query) use ($searchKeyword) {
-                            $query->where('nama_mata_kuliah', 'LIKE', "%{$searchKeyword}%");
-                        })
-                        ->orWhereHas('mahasiswa', function ($query) use ($searchKeyword) {
-                            $query->where('nama_lengkap', 'LIKE', "%{$searchKeyword}%");
-                        });
+                $query->whereHas('mahasiswa', function($query) use ($searchKeyword) {
+                    $query->where('nama_lengkap', 'LIKE', "%{$searchKeyword}%");
+                })->orWhereHas('mataKuliah', function($query) use ($searchKeyword) {
+                    $query->where('nama_mata_kuliah', 'LIKE', "%{$searchKeyword}%");
+                })->orWhere('nim', 'LIKE', "%{$searchKeyword}%");
+            }
+
+            if ($prodi_id) {
+                $query->whereHas('mataKuliah', function($query) use ($prodi_id) {
+                    $query->where('prodi', $prodi_id);
                 });
+            }
+
+            if ($mata_kuliah_id) {
+                $query->where('id_mata_kuliah', $mata_kuliah_id);
+            }
+
+            if ($nim) {
+                $query->where('nim', $nim);
+            }
+
+            if ($nilai) {
+                $query->where('nilai', $nilai);
             }
         }
 
         $hasil_studis = $query->orderBy($sort, $direction)->paginate(20);
         $total = $hasil_studis->total();
         $mata_kuliahs = MataKuliah::all();
-        $mahasiswas = Mahasiswa::all();
+        $mahasiswas = Mahasiswa::whereIn('nim', function($query) {
+            $query->select('nim')->from('hasil_studis');
+        })->get();
+
+        $totalNilai = 0;
+        $totalSks = 0;
+
+        if ($nim) {
+            $hasil_studi_nim = HasilStudi::where('nim', $nim)->get();
+            foreach ($hasil_studi_nim as $hasilStudi) {
+                $mataKuliah = $hasilStudi->mataKuliah;
+                $totalNilai += $hasilStudi->nilai * $mataKuliah->sks;
+                $totalSks += $mataKuliah->sks;
+            }
+        }
+
+        $ipk = $totalSks ? round($totalNilai / $totalSks, 2) : 0;
         $prodis = Prodi::all();
 
-        return view('hasil_studi_page', compact('hasil_studis', 'total', 'sort', 'direction', 'searchKeyword', 'mata_kuliahs', 'mahasiswas', 'authority_level', 'prodis', 'prodi_id', 'mata_kuliah_id', 'nim', 'filter_nilai'));
+        return view('hasil_studi_page', compact('hasil_studis', 'total', 'sort', 'direction', 'searchKeyword', 'mata_kuliahs', 'mahasiswas', 'prodis', 'authority_level', 'prodi_id', 'mata_kuliah_id', 'nim', 'nilai', 'filter_type', 'user', 'user_dosen_id', 'isPrint', 'totalSks', 'ipk'));
     }
 
     public function create()
@@ -125,32 +164,31 @@ class HasilStudiController extends Controller
     }
 
     public function cetakTranskrip($nim)
-{
-    $mahasiswa = Mahasiswa::where('nim', $nim)->firstOrFail();
-    $hasil_studi = HasilStudi::where('nim', $nim)->get();
-    $jumlah_sks = $hasil_studi->sum(function ($hasil) {
-        return $hasil->mataKuliah->sks;
-    });
-    $IPK = $hasil_studi->average('nilai');
-    $predikat = $this->hitungPredikat($IPK);
-    $judul_karya_tulis = $mahasiswa->karyaTulis ? $mahasiswa->karyaTulis->judul : '-';
-    $dosen = $mahasiswa->dosenAkademik;
-    $direktur = Direktur::all()->first();
+    {
+        $mahasiswa = Mahasiswa::where('nim', $nim)->firstOrFail();
+        $hasil_studi = HasilStudi::where('nim', $nim)->get();
+        $jumlah_sks = $hasil_studi->sum(function ($hasil) {
+            return $hasil->mataKuliah->sks;
+        });
+        $IPK = $hasil_studi->average('nilai');
+        $predikat = $this->hitungPredikat($IPK);
+        $judul_karya_tulis = $mahasiswa->karyaTulis ? $mahasiswa->karyaTulis->judul : '-';
+        $dosen = $mahasiswa->dosenAkademik;
+        $direktur = Direktur::all()->first();
 
-    return view('cetak_transkrip', compact('mahasiswa', 'hasil_studi', 'jumlah_sks', 'IPK', 'predikat', 'judul_karya_tulis', 'dosen', 'direktur'));
-}
-
-private function hitungPredikat($IPK)
-{
-    if ($IPK >= 3.51) {
-        return 'Cum Laude';
-    } elseif ($IPK >= 3.01) {
-        return 'Sangat Memuaskan';
-    } elseif ($IPK >= 2.76) {
-        return 'Memuaskan';
-    } else {
-        return 'Cukup';
+        return view('cetak_transkrip', compact('mahasiswa', 'hasil_studi', 'jumlah_sks', 'IPK', 'predikat', 'judul_karya_tulis', 'dosen', 'direktur'));
     }
-}
 
+    private function hitungPredikat($IPK)
+    {
+        if ($IPK >= 3.51) {
+            return 'Cum Laude';
+        } elseif ($IPK >= 3.01) {
+            return 'Sangat Memuaskan';
+        } elseif ($IPK >= 2.76) {
+            return 'Memuaskan';
+        } else {
+            return 'Cukup';
+        }
+    }
 }

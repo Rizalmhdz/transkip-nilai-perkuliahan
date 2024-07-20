@@ -59,7 +59,18 @@
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'angkatan' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
-                                        
+                                        <th>
+                                            <a href="?sort=prodi&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
+                                                Prodi
+                                                <i class="ms-3 fa fa-sort{{ request('sort') == 'prodi' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sort=tahun_lulus&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
+                                                Tahun Lulus
+                                                <i class="ms-3 fa fa-sort{{ request('sort') == 'tahun_lulus' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
+                                            </a>
+                                        </th>
                                         @if($authority_level == 1)
                                         <th>
                                             <a href="?sort=dosen_akademik&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
@@ -79,7 +90,12 @@
                                         <td>{{ $mahasiswa->nama_lengkap }}</td>
                                         <td>{{ $mahasiswa->tempat_lahir }}, {{ $mahasiswa->tanggal_lahir }}</td>
                                         <td>{{ $mahasiswa->angkatan }}</td>
-                                        
+                                        <td>
+                                            @foreach ($prodis as $prodi )
+                                                {{ $mahasiswa->prodi == $prodi->id ? $prodi->nama_prodi : ''}}
+                                            @endforeach
+                                        </td>
+                                        <td>{{ $mahasiswa->tahun_lulus ?? 'Belum lulus' }}</td>
                                         @if($authority_level == 1)
                                         <td>
                                             @foreach($dosens as $dosen)
@@ -91,7 +107,7 @@
                                             @if ($authority_level == 1)
                                                 <button class="btn btn-warning ms-2" data-toggle="modal"
                                                     data-target="#editModal{{ $mahasiswa->id }}"
-                                                    onclick="editMahasiswa({{ $mahasiswa->id }}, '{{ $mahasiswa->nim }}', '{{ $mahasiswa->nama_lengkap }}', '{{ $mahasiswa->tempat_lahir }}', '{{ $mahasiswa->tanggal_lahir }}', '{{ $mahasiswa->angkatan }}', '{{ $mahasiswa->dosen_akademik }}')">
+                                                    onclick="editMahasiswa({{ $mahasiswa->id }}, '{{ $mahasiswa->nim }}', '{{ $mahasiswa->nama_lengkap }}', '{{ $mahasiswa->tempat_lahir }}', '{{ $mahasiswa->tanggal_lahir }}', '{{ $mahasiswa->angkatan }}', '{{ $mahasiswa->dosen_akademik }}', '{{ $mahasiswa->prodi }}', '{{ $mahasiswa->tahun_lulus }}')">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
                                                 <button class="btn btn-danger" data-toggle="modal"
@@ -99,7 +115,7 @@
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             @else
-                                                <a href="{{ route('hasil-studi.index', ['nim' => $mahasiswa->nim]) }}" class="btn btn-info ms-2">
+                                                <a href="{{ route('hasil-studi.index', ['nim' => $mahasiswa->nim, 'isPrint' => true]) }}" class="btn btn-info ms-2">
                                                     <i class="fa fa-eye"></i> Lihat Hasil Studi
                                                 </a>
                                             @endif
@@ -176,7 +192,25 @@
                                                                     </select>
                                                                     <a href="{{ route('dosen.index') }}" class="related-link">Tambahkan Dosen baru</a>
                                                                 </div>
-                                                                
+                                                                <div class="form-group mb-3">
+                                                                    <label for="edit_prodi{{ $mahasiswa->id }}"
+                                                                        class="font-weight-bold">Prodi</label>
+                                                                    <select class="form-control rounded"
+                                                                        id="edit_prodi{{ $mahasiswa->id }}"
+                                                                        name="prodi" required>
+                                                                        @foreach($prodis as $prodi)
+                                                                            <option value="{{ $prodi->id }}">{{ $prodi->nama_prodi }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group mb-3">
+                                                                    <label for="edit_tahun_lulus{{ $mahasiswa->id }}"
+                                                                        class="font-weight-bold">Tahun Lulus</label>
+                                                                    <input type="number"
+                                                                        class="form-control rounded"
+                                                                        id="edit_tahun_lulus{{ $mahasiswa->id }}"
+                                                                        name="tahun_lulus">
+                                                                </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
@@ -277,6 +311,18 @@
                                         </select>
                                         <a href="{{ route('dosen.index') }}" class="related-link">Tambahkan Dosen baru</a>
                                     </div>
+                                    <div class="form-group mb-3">
+                                        <label for="prodi" class="font-weight-bold">Prodi</label>
+                                        <select class="form-control rounded" id="prodi" name="prodi" required>
+                                            @foreach($prodis as $prodi)
+                                                <option value="{{ $prodi->id }}">{{ $prodi->nama_prodi }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="tahun_lulus" class="font-weight-bold">Tahun Lulus</label>
+                                        <input type="number" class="form-control rounded" id="tahun_lulus" name="tahun_lulus">
+                                    </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Batalkan</button>
@@ -303,13 +349,15 @@
                         $(this).find('form')[0].reset();
                     });
 
-                    window.editMahasiswa = function (id, nim, nama_lengkap, tempat_lahir, tanggal_lahir, angkatan, dosen_akademik) {
+                    window.editMahasiswa = function (id, nim, nama_lengkap, tempat_lahir, tanggal_lahir, angkatan, dosen_akademik, prodi, tahun_lulus) {
                         $('#edit_nim' + id).val(nim);
                         $('#edit_nama_lengkap' + id).val(nama_lengkap);
                         $('#edit_tempat_lahir' + id).val(tempat_lahir);
                         $('#edit_tanggal_lahir' + id).val(tanggal_lahir);
                         $('#edit_angkatan' + id).val(angkatan);
                         $('#edit_dosen_akademik' + id).val(dosen_akademik);
+                        $('#edit_prodi' + id).val(prodi);
+                        $('#edit_tahun_lulus' + id).val(tahun_lulus);
                     }
 
                     $('#searchButton').on('click', function () {

@@ -10,22 +10,26 @@ class Prodi extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_prodi',
-        'ketua_prodi',
+        'nama_prodi', 'ketua_prodi'
     ];
 
-    public function ketua()
+    public function ketuaProdi()
     {
         return $this->belongsTo(Dosen::class, 'ketua_prodi', 'nidn');
     }
 
-    public function dosenProdis()
+    public function mahasiswas()
     {
-        return $this->hasMany(DosenProdi::class, 'prodi', 'id');
+        return $this->hasMany(Mahasiswa::class, 'prodi');
     }
 
-    public function mataKuliah()
+    public function dosens()
     {
-        return $this->hasMany(MataKuliah::class, 'prodi', 'id');
+        return $this->hasMany(DosenProdi::class, 'prodi');
+    }
+
+    public function mataKuliahs()
+    {
+        return $this->hasMany(MataKuliah::class, 'prodi');
     }
 }

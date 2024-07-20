@@ -22,10 +22,45 @@ class DosenSeeder extends Seeder
 
         foreach ($users as $user) {
             Dosen::create([
-                'nama' => $user->name . ', S2',  // Menggunakan nama dari tabel users
+                'nama' => $user->name,
                 'nidn' => $faker->unique()->numerify('##########'),
                 'email_dosen' => $user->email,
             ]);
         }
+
+        // $dosens = [
+        //     [
+        //         'nidn' => '1234567890',
+        //         'nama' => 'syahroni',
+        //         'email_dosen' => 'syahroni@gmail.com',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
+        //     [
+        //         'nidn' => '0123456789',
+        //         'nama' => "Ani",
+        //         'email_dosen' => 'ani1234@gmail.com',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
+        //     [
+        //         'nidn' => '0133456789',
+        //         'nama' => "Handoko",
+        //         'email_dosen' => 'Handoko@gmail.com',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
+        //     [
+        //         'nidn' => '0113456789',
+        //         'nama' => "Noval",
+        //         'email_dosen' => 'Noval@gmail.com',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
+            
+        // ];
+
+        // // Insert data menggunakan DB facade
+        // DB::table('dosens')->insert($dosens);
     }
 }
