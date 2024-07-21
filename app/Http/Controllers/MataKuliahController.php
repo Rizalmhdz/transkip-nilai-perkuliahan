@@ -27,8 +27,6 @@ class MataKuliahController extends Controller
         $kategori_matkuls = KategoriMatkul::all();
 
         $user = Auth::user();
-        $authority_level = $user->level;
-        if ($authority_level == 1) {
             $query = MataKuliah::query();
 
             if ($prodi_id) {
@@ -57,18 +55,11 @@ class MataKuliahController extends Controller
                 });
             }
             $mata_kuliahs = $query->orderBy($sort, $direction)->paginate(20);
-        } else if ($authority_level == 2) {
-            // Dosen, show only mata kuliah they teach
-            $dosen = Dosen::where('email_dosen', $user->email)->first();
-            $mata_kuliahs = MataKuliah::where('dosen_pengampu', $dosen->nidn)->paginate(20);
-        } else {
-            // Other users, show no data or handle appropriately
-            $mata_kuliahs = collect(); // Empty collection
-        }
+       
 
         $total = $mata_kuliahs->total(); // Total number of records
 
-        return view('mata_kuliah_page', compact('mata_kuliahs', 'prodis', 'prodi_id', 'dosens', 'dosen_id', 'kategori_matkuls', 'kode_kategori', 'total', 'sort', 'direction', 'searchKeyword', 'authority_level'));
+        return view('mata_kuliah_page', compact('mata_kuliahs', 'prodis', 'prodi_id', 'dosens', 'dosen_id', 'kategori_matkuls', 'kode_kategori', 'total', 'sort', 'direction', 'searchKeyword'));
     }
 
     public function create()

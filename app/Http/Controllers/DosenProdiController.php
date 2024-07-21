@@ -16,7 +16,6 @@ class DosenProdiController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $authority_level = $user->level;
         $sort = $request->input('sort', 'nidn');
         $direction = $request->input('direction', 'asc');
         $searchKeyword = $request->input('searchKeyword');
@@ -25,7 +24,6 @@ class DosenProdiController extends Controller
 
         $query = DosenProdi::query();
 
-        if ($authority_level == 1) {
             if ($searchKeyword) {
                 $query->where('nidn', 'LIKE', "%{$searchKeyword}%")
                     ->orWhereHas('dosen', function($query) use ($searchKeyword) {
@@ -46,27 +44,7 @@ class DosenProdiController extends Controller
 
             $dosen_prodis = $query->orderBy($sort, $direction)->paginate(20);
 
-        } else if ($authority_level == 2) {
-            $dosen = Dosen::where('email_dosen', $user->email)->first();
-            if ($dosen) {
-                $dosen_prodis = DosenProdi::where('nidn', $dosen->nidn)->paginate(20);
-
-                // Informasi tambahan untuk dashboard
-                $mahasiswaBimbinganAkademik = Mahasiswa::where('dosen_akademik', $dosen->nidn)->count();
-                $mataKuliahDiampu = MataKuliah::where('dosen_pengampu', $dosen->nidn)->count();
-                $mahasiswaBimbinganKaryaTulis = KaryaTulis::where('pembimbing', $dosen->nidn)->count();
-            } else {
-                $dosen_prodis = collect(); // Empty collection if dosen not found
-                $mahasiswaBimbinganAkademik = 0;
-                $mataKuliahDiampu = 0;
-                $mahasiswaBimbinganKaryaTulis = 0;
-            }
-        } else {
-            $dosen_prodis = collect(); // Empty collection for other authority levels
-            $mahasiswaBimbinganAkademik = 0;
-            $mataKuliahDiampu = 0;
-            $mahasiswaBimbinganKaryaTulis = 0;
-        }
+        
 
         $mahasiswaBimbinganAkademik = Mahasiswa::all()->count();
                 $mataKuliahDiampu = MataKuliah::all()->count();
@@ -76,7 +54,7 @@ class DosenProdiController extends Controller
         $dosens = Dosen::all();
         $prodis = Prodi::all();
 
-        return view('dosen_prodi_page', compact('dosen_prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'prodis', 'authority_level', 'prodi_id', 'dosen_id', 'mahasiswaBimbinganAkademik', 'mataKuliahDiampu', 'mahasiswaBimbinganKaryaTulis'));
+        return view('dosen_prodi_page', compact('dosen_prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'prodis', 'prodi_id', 'dosen_id', 'mahasiswaBimbinganAkademik', 'mataKuliahDiampu', 'mahasiswaBimbinganKaryaTulis'));
     }
 
     public function create()

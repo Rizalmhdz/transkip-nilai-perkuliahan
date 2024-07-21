@@ -22,9 +22,6 @@ class MahasiswaController extends Controller
         $dosens = Dosen::all();
 
         $user = Auth::user();
-        $authority_level = $user->level;
-
-        if ($authority_level == 1) {
             $query = Mahasiswa::query();
 
             if ($prodi_id) {
@@ -44,16 +41,10 @@ class MahasiswaController extends Controller
             }
 
             $mahasiswas = $query->orderBy($sort, $direction)->paginate(20);
-        } else if ($authority_level == 2) {
-            $dosen = Dosen::where('email_dosen', $user->email)->first();
-            $mahasiswas = Mahasiswa::where('dosen_akademik', $dosen->nidn)->paginate(20);
-        } else {
-            $mahasiswas = collect(); // Empty collection
-        }
 
         $total = $mahasiswas->total();
 
-        return view('mahasiswa_page', compact('mahasiswas', 'prodis', 'prodi_id', 'dosens', 'dosen_id', 'total', 'sort', 'direction', 'searchKeyword', 'authority_level'));
+        return view('mahasiswa_page', compact('mahasiswas', 'prodis', 'prodi_id', 'dosens', 'dosen_id', 'total', 'sort', 'direction', 'searchKeyword'));
     }
 
     public function create()

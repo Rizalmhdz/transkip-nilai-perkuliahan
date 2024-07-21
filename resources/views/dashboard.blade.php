@@ -4,6 +4,7 @@
             {{ __('Dashboard Dosen') }}
         </h2>
     </x-slot>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">

@@ -16,7 +16,6 @@ class HasilStudiController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $authority_level = $user->level;
 
         $isPrint = $request->input('isPrint', false);
         $sort = $request->input('sort', 'nilai');
@@ -31,7 +30,7 @@ class HasilStudiController extends Controller
 
         $query = HasilStudi::query();
 
-        if ($authority_level == 1) {
+        
             if ($searchKeyword) {
                 $query->whereHas('mahasiswa', function($query) use ($searchKeyword) {
                     $query->where('nama_lengkap', 'LIKE', "%{$searchKeyword}%");
@@ -57,46 +56,7 @@ class HasilStudiController extends Controller
             if ($nilai) {
                 $query->where('nilai', $nilai);
             }
-        } elseif ($authority_level == 2) {
-            $dosen = Dosen::where('email_dosen', $user->email)->first();
-            $user_dosen_id = $dosen->nidn;
-
-            if ($filter_type == 'bimbingan') {
-                $query->whereHas('mahasiswa', function($query) use ($dosen) {
-                    $query->where('dosen_akademik', $dosen->nidn);
-                });
-            } elseif ($filter_type == 'pengampu') {
-                $query->whereHas('mataKuliah', function($query) use ($user_dosen_id) {
-                    $query->where('dosen_pengampu', $user_dosen_id);
-                });
-            }
-
-            if ($searchKeyword) {
-                $query->whereHas('mahasiswa', function($query) use ($searchKeyword) {
-                    $query->where('nama_lengkap', 'LIKE', "%{$searchKeyword}%");
-                })->orWhereHas('mataKuliah', function($query) use ($searchKeyword) {
-                    $query->where('nama_mata_kuliah', 'LIKE', "%{$searchKeyword}%");
-                })->orWhere('nim', 'LIKE', "%{$searchKeyword}%");
-            }
-
-            if ($prodi_id) {
-                $query->whereHas('mataKuliah', function($query) use ($prodi_id) {
-                    $query->where('prodi', $prodi_id);
-                });
-            }
-
-            if ($mata_kuliah_id) {
-                $query->where('id_mata_kuliah', $mata_kuliah_id);
-            }
-
-            if ($nim) {
-                $query->where('nim', $nim);
-            }
-
-            if ($nilai) {
-                $query->where('nilai', $nilai);
-            }
-        }
+       
 
         $hasil_studis = $query->orderBy($sort, $direction)->paginate(20);
         $total = $hasil_studis->total();
@@ -120,7 +80,7 @@ class HasilStudiController extends Controller
         $ipk = $totalSks ? round($totalNilai / $totalSks, 2) : 0;
         $prodis = Prodi::all();
 
-        return view('hasil_studi_page', compact('hasil_studis', 'total', 'sort', 'direction', 'searchKeyword', 'mata_kuliahs', 'mahasiswas', 'prodis', 'authority_level', 'prodi_id', 'mata_kuliah_id', 'nim', 'nilai', 'filter_type', 'user', 'user_dosen_id', 'isPrint', 'totalSks', 'ipk'));
+        return view('hasil_studi_page', compact('hasil_studis', 'total', 'sort', 'direction', 'searchKeyword', 'mata_kuliahs', 'mahasiswas', 'prodis', 'prodi_id', 'mata_kuliah_id', 'nim', 'nilai', 'filter_type', 'user', 'user_dosen_id', 'isPrint', 'totalSks', 'ipk'));
     }
 
     public function create()
@@ -142,9 +102,8 @@ class HasilStudiController extends Controller
         $mata_kuliahs = MataKuliah::all();
         $mahasiswas = Mahasiswa::all();
         $user = Auth::user();
-        $authority_level = $user->level;
 
-        return view('hasil_studi_page', compact('hasilStudi', 'mata_kuliahs', 'mahasiswas', 'authority_level'));
+        return view('hasil_studi_page', compact('hasilStudi', 'mata_kuliahs', 'mahasiswas', ));
     }
 
     public function update(Request $request, $id)

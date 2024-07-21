@@ -206,7 +206,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-between">
+                        <div class="col-12 mb-2">
                             <div>
                                 {{ $prodis->links() }}
                             </div>

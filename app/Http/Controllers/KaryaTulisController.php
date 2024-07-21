@@ -14,7 +14,6 @@ class KaryaTulisController extends Controller
     {
 
         $user = Auth::user();
-        $authority_level = $user->level;
 
         $sort = $request->input('sort', 'judul');
         $direction = $request->input('direction', 'asc');
@@ -22,7 +21,7 @@ class KaryaTulisController extends Controller
 
       
 
-        if ($authority_level == 1) {
+       
             $query = KaryaTulis::query();
             
             if ($searchKeyword) {
@@ -33,19 +32,13 @@ class KaryaTulisController extends Controller
            
             $karya_tuliss = $query->orderBy($sort, $direction)->paginate(20);
             
-        } else if ($authority_level == 2) {
-            $dosen = Dosen::where('email_dosen', $user->email)->first();
-            $karya_tuliss = KaryaTulis::where('pembimbing', $dosen->nidn)->paginate(20);
-        } else {
-            $karya_tuliss = collect(); // Empty collection
-        }
-
+       
        
         $mahasiswas = Mahasiswa::all();
         $total = $karya_tuliss->total();
         $dosens = Dosen::all();
 
-        return view('karya_tulis_page', compact('karya_tuliss', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'authority_level', 'mahasiswas'));
+        return view('karya_tulis_page', compact('karya_tuliss', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'mahasiswas'));
     }
 
     public function create()
