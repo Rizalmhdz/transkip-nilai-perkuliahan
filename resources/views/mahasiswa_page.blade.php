@@ -14,15 +14,9 @@
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
                     <div class="col-12 col-md-9 mb-2 mb-md-0">
-                        @if ($authority_level == 1)
                             <button class="btn btn-primary me-2" data-toggle="modal" data-target="#createModal">
                                 <i class="fa fa-plus"></i> Tambah Data
                             </button>
-                        @else
-                        <h2 class="font-semibold text-sm text-gray-600 leading-tight align-text-bottom">
-                           # Berikut Data Mahasiswa yang dibawah Bimbingan Akademik anda
-                        </h2>
-                        @endif
                     </div>
                     <div class="col-12 col-md-3 d-md-flex justify-content-end">
                         <button type="button" class="btn btn-outline-dark"> Total Data : {{ $total }}</button>
@@ -71,14 +65,12 @@
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'tahun_lulus' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
-                                        @if($authority_level == 1)
                                         <th>
                                             <a href="?sort=dosen_akademik&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
                                                 Dosen Akademik
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'dosen_akademik' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
-                                        @endif
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -96,15 +88,12 @@
                                             @endforeach
                                         </td>
                                         <td>{{ $mahasiswa->tahun_lulus ?? 'Belum lulus' }}</td>
-                                        @if($authority_level == 1)
                                         <td>
                                             @foreach($dosens as $dosen)
                                                 {{ $dosen->nidn == $mahasiswa->dosen_akademik ?  $dosen->nama : ''}}
                                             @endforeach
                                         </td>
-                                        @endif
                                         <td class="action-buttons">
-                                            @if ($authority_level == 1)
                                                 <button class="btn btn-warning ms-2" data-toggle="modal"
                                                     data-target="#editModal{{ $mahasiswa->id }}"
                                                     onclick="editMahasiswa({{ $mahasiswa->id }}, '{{ $mahasiswa->nim }}', '{{ $mahasiswa->nama_lengkap }}', '{{ $mahasiswa->tempat_lahir }}', '{{ $mahasiswa->tanggal_lahir }}', '{{ $mahasiswa->angkatan }}', '{{ $mahasiswa->dosen_akademik }}', '{{ $mahasiswa->prodi }}', '{{ $mahasiswa->tahun_lulus }}')">
@@ -114,11 +103,9 @@
                                                     data-target="#deleteModal{{ $mahasiswa->id }}">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
-                                            @else
                                                 <a href="{{ route('hasil-studi.index', ['nim' => $mahasiswa->nim, 'isPrint' => true]) }}" class="btn btn-info ms-2">
                                                     <i class="fa fa-eye"></i> Lihat Hasil Studi
                                                 </a>
-                                            @endif
 
                                             <!-- Edit Modal -->
                                             <div class="modal fade" id="editModal{{ $mahasiswa->id }}" tabindex="-1"

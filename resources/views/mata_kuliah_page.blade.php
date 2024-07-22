@@ -14,18 +14,12 @@
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
                     <div class="col-12 col-md-9 mb-2 mb-md-0">
-                        @if ($authority_level == 1)
                             <button class="btn btn-primary me-2" data-toggle="modal" data-target="#createModal">
                                 <i class="fa fa-plus"></i> Tambah Data
                             </button>
                             <button class="btn btn-secondary me-2" data-toggle="modal" data-target="#filterModal">
                                 <i class="fa fa-filter"></i> Filter
                             </button>
-                        @else
-                        <h2 class="font-semibold text-sm text-gray-600 leading-tight align-text-bottom">
-                           # Berikut Data Mata kuliah yang Anda Ampu 
-                        </h2>
-                        @endif
                     </div>
                     <div class="col-12 col-md-3 d-md-flex justify-content-end justify-content-md-end">
                         <button type="button" class="btn btn-outline-dark"> Total Data : {{ $total }}</button>
@@ -56,23 +50,19 @@
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'kategori_matkul' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
-                                        @if ($authority_level == 1)
                                             <th>
                                                 <a href="?sort=dosen_pengampu&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
                                                     Dosen Pengampu
                                                     <i class="ms-3 fa fa-sort{{ request('sort') == 'dosen_pengampu' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                                 </a>
                                             </th>
-                                        @endif
                                         <th>
                                             <a href="?sort=prodi&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
                                                 Prodi
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'prodi' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
-                                        @if ($authority_level == 1)
                                             <th>Aksi</th>
-                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -82,15 +72,12 @@
                                             <td>{{ $mata_kuliah->nama_mata_kuliah }}</td>
                                             <td>{{ $mata_kuliah->sks }}</td>
                                             <td>{{ $mata_kuliah->kategori_matkul }}</td>
-                                            @if ($authority_level == 1)
                                                 <td>{{ $mata_kuliah->dosen->nama }}</td>
-                                            @endif
                                             <td>
                                             @foreach($prodis as $prodi)
                                                 {{ $mata_kuliah->prodi == $prodi->id ?  $prodi->nama_prodi : ''}}
                                             @endforeach
                                             </td>
-                                            @if ($authority_level == 1)
                                                 <td class="action-buttons">
                                                     <button class="btn btn-warning ms-2" data-toggle="modal" data-target="#editModal{{ $mata_kuliah->id }}" onclick="editMataKuliah({{ $mata_kuliah->id }}, '{{ $mata_kuliah->nama_mata_kuliah }}', {{ $mata_kuliah->sks }}, '{{ $mata_kuliah->kategori_matkul }}', '{{ $mata_kuliah->dosen_pengampu }}', {{ $mata_kuliah->prodi }})">
                                                         <i class="fa fa-edit"></i>
@@ -183,7 +170,7 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                            @endif
+                                           
                                         </tr>
                                     @endforeach
                                 </tbody>

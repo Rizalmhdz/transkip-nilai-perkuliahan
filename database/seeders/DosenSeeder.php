@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Dosen;
 use Illuminate\Support\Str;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Hash;
 
 class DosenSeeder extends Seeder
 {
@@ -18,15 +19,28 @@ class DosenSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('id_ID');
-        $users = User::all();
 
-        foreach ($users as $user) {
+        $faker = Faker::create('id_ID');
+
+        $domains = ['@gmail.com', '@yahoo.com', '@outlook.com'];
+
+        for ($i = 0; $i < 20; $i++) {
+            $email = $faker->unique()->userName . $faker->randomElement($domains);
+
             Dosen::create([
-                'nama' => $user->name,
+                'nama' => $faker->name,
                 'nidn' => $faker->unique()->numerify('##########'),
-                'email_dosen' => $user->email,
+               'email_dosen' => $email,
             ]);
         }
+
+        // foreach ($users as $user) {
+        //     Dosen::create([
+        //         'nama' => $user->name,
+        //         'nidn' => $faker->unique()->numerify('##########'),
+        //         'email_dosen' => $user->email,
+        //     ]);
+        // }
 
         // $dosens = [
         //     [

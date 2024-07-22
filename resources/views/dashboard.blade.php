@@ -9,7 +9,6 @@
     <div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
             <!-- Dashboard Info Section -->
-            @if ($authority_level == 2)
                 <div class="flex flex-wrap justify-around bg-white p-6 rounded-lg shadow-md mb-6">
                     <div class="flex items-center justify-center p-4 m-2 bg-blue-100 rounded-lg w-1/3">
                         <div class="text-center">
@@ -33,9 +32,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
 
-            @if ($authority_level == 1)
                 <!-- Laporan Semua Tabel -->
                 <div class="container">
                     <div class="row mb-3 d-flex justify-content-between">
@@ -203,7 +200,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+    
 
         </div>
     </div>

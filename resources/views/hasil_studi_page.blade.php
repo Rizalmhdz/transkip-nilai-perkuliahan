@@ -14,18 +14,12 @@
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
                     <div class="col-12 col-md-6 mb-2 mb-md-0">
-                        @if ($authority_level == 1)
                             <button class="btn btn-primary me-2" data-toggle="modal" data-target="#createModal">
                                 <i class="fa fa-plus"></i> Tambah Data
                             </button>
                             <button class="btn btn-secondary me-2" data-toggle="modal" data-target="#filterModal">
                                 <i class="fa fa-filter"></i> Filter
                             </button>
-                        @else
-                            <button class="btn btn-secondary me-2" data-toggle="modal" data-target="#filterModal">
-                                <i class="fa fa-filter"></i> Filter
-                            </button>
-                        @endif
                         
                         <button type="button" class="btn btn-danger" onclick="window.location.href='{{ route('hasil-studi.index') }}'">Hapus Filter</button>
                     </div>
@@ -63,11 +57,8 @@
                                         <th>SKS</th>
                                         <th>Mata Kuliah</th>
                                         <th>Dosen Pengampu</th>
-                                        @if ($authority_level == 1)
-                                            <th>Aksi</th>
-                                        @else
-                                            <th>Edit Nilai</th>
-                                        @endif
+                                        <th>Aksi</th>
+                                        <th>Edit Nilai</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,12 +96,10 @@
                                                 onclick="editHasilStudi({{ $hasil_studi->id }}, '{{ $hasil_studi->nilai }}')">
                                                 <i class="fa fa-edit"></i>
                                             </button>
-                                            @if ($authority_level == 1)
                                                 <button class="btn btn-danger" data-toggle="modal"
                                                     data-target="#deleteModal{{ $hasil_studi->id }}">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
-                                            @endif
 
                                             <!-- Edit Modal -->
                                             <div class="modal fade" id="editModal{{ $hasil_studi->id }}" tabindex="-1"
@@ -132,7 +121,6 @@
                                                                 method="POST">
                                                                 @csrf
                                                                 @method('PUT')
-                                                                @if ($authority_level == 1)
                                                                     <div class="form-group mb-3">
                                                                         <label for="edit_id_mata_kuliah{{ $hasil_studi->id }}"
                                                                             class="font-weight-bold">Mata Kuliah</label>
@@ -157,7 +145,7 @@
                                                                         </select>
                                                                         <a href="{{ route('mahasiswa.create') }}" class="related-link">Tambahkan Mahasiswa baru</a>
                                                                     </div>
-                                                                @endif
+                                                    
                                                                 <div class="form-group mb-3">
                                                                     <label for="edit_nilai{{ $hasil_studi->id }}"
                                                                         class="font-weight-bold">Nilai</label>
@@ -184,7 +172,6 @@
                                             </div>
 
                                             <!-- Delete Modal -->
-                                            @if ($authority_level == 1)
                                                 <div class="modal fade" id="deleteModal{{ $hasil_studi->id }}" tabindex="-1"
                                                     role="dialog" aria-labelledby="deleteModalLabel{{ $hasil_studi->id }}"
                                                     aria-hidden="true">
@@ -216,7 +203,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            @endif
+                                          
                                         </td>
                                     </tr>
                                     @endforeach
@@ -232,7 +219,6 @@
                 </div>
 
                 <!-- Create Modal -->
-                @if ($authority_level == 1)
                     <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -283,7 +269,7 @@
                             </div>
                         </div>
                     </div>
-                @endif
+                
 
                 <!-- Filter Modal -->
                 <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
@@ -335,16 +321,6 @@
                                             <option value="0">E - 0</option>
                                         </select>
                                     </div>
-                                    @if ($authority_level == 2)
-                                        <div class="form-group mb-3">
-                                            <label for="filter_type" class="font-weight-bold">Filter Type</label>
-                                            <select name="filter_type" id="filter_type" class="form-control rounded">
-                                                <option value="">Pilih Type</option>
-                                                <option value="bimbingan">Mahasiswa Bimbingan</option>
-                                                <option value="pengampu">Dosen Pengampu</option>
-                                            </select>
-                                        </div>
-                                    @endif
                                 </form>
                             </div>
                             <div class="modal-footer">

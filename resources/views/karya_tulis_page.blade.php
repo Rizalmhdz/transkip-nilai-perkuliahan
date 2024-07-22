@@ -15,15 +15,9 @@
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
                     <div class="col-12 col-md-9 mb-2 mb-md-0">
-                        @if ($authority_level == 1)
                             <button class="btn btn-primary me-2" data-toggle="modal" data-target="#createModal">
                                 <i class="fa fa-plus"></i> Tambah Data
                             </button>
-                        @else
-                        <h2 class="font-semibold text-sm text-gray-600 leading-tight align-text-bottom">
-                            # Berikut Data Karya Tulis Mahasiswa yang Anda Bimbing
-                        </h2>
-                        @endif
                     </div>
                     <div class="col-12 col-md-3 d-md-flex justify-content-end">
                         <button type="button" class="btn btn-outline-dark"> Total Data : {{ $total }}</button>
@@ -60,10 +54,9 @@
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'pembimbing' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
-                                        @if ($authority_level == 1)
                                         
                                             <th>Aksi</th>
-                                        @endif
+                                      
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -82,7 +75,7 @@
                                                     {{  $dosen->nidn === $karya_tulis->pembimbing ? $dosen->nama : ''}}
                                                 @endforeach
                                             </td>
-                                        @if ($authority_level == 1)
+                                        
                                        
                                             <td class="action-buttons">
                                                 <button class="btn btn-warning ms-2" data-toggle="modal"
@@ -183,7 +176,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                        @endif
+                                        
                                     </tr>
                                     @endforeach
                                 </tbody>

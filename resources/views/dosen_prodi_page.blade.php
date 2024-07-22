@@ -8,7 +8,6 @@
     <div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
             <!-- Dashboard Info Section -->
-            @if ($authority_level == 2)
                 <div class="flex flex-wrap justify-around bg-white p-6 rounded-lg shadow-md mb-6">
                     <div class="flex items-center justify-center p-4 m-2 bg-blue-100 rounded-lg">
                         <div class="text-center">
@@ -32,24 +31,17 @@
                         </div>
                     </div>
                 </div>
-            @endif
 
             <!-- Dosen Prodi Section -->
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
                     <div class="col-12 col-md-9 mb-2 mb-md-0">
-                        @if ($authority_level == 1)
                             <button class="btn btn-primary me-2" data-toggle="modal" data-target="#createModal">
                                 <i class="fa fa-plus"></i> Tambah Data
                             </button>
                             <button class="btn btn-secondary me-2" data-toggle="modal" data-target="#filterModal">
                                 <i class="fa fa-filter"></i> Filter
                             </button>
-                        @else
-                            <h2 class="font-semibold text-sm text-gray-600 leading-tight align-text-bottom">
-                                # Berikut Program Studi Tempat Anda Terdaftar
-                            </h2>
-                        @endif
                     </div>
                     <div class="col-12 col-md-3 d-md-flex justify-content-end">
                         <button type="button" class="btn btn-outline-dark"> Total Data : {{ $total }}</button>
@@ -79,9 +71,7 @@
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'prodi' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
-                                        @if ($authority_level == 1)
                                             <th>Aksi</th>
-                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -99,7 +89,6 @@
                                                 {{ $dosen_prodi->prodi == $prodi->id ?  $prodi->nama_prodi : ''}}
                                             @endforeach
                                         </td>
-                                        @if ($authority_level == 1)
                                             <td class="action-buttons">
                                                 <button class="btn btn-warning ms-2" data-toggle="modal"
                                                     data-target="#editModal{{ $dosen_prodi->id }}"
@@ -199,7 +188,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                        @endif
+                                
                                     </tr>
                                     @endforeach
                                 </tbody>
