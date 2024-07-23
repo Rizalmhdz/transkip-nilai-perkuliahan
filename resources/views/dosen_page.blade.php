@@ -6,11 +6,13 @@
     </x-slot>
 
     <head>
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <style>
             .modal-title {
                 text-align: center;
                 text-transform: capitalize;
                 width: 100%;
+                font-size: 1rem;
             }
 
             .modal-header {
@@ -18,43 +20,54 @@
                 font-weight: bold;
                 justify-content: center;
                 align-items: center;
+                padding: 1rem;
             }
 
             .modal-header .close {
                 position: absolute;
-                right: 15px;
+                right: 10px;
             }
 
             .form-control {
                 border: 1px solid #ced4da;
+                font-size: 0.875rem;
             }
 
             .table-responsive {
                 overflow-x: auto;
+                margin-left: -1rem;
+                margin-right: -1rem;
             }
 
             .table thead th {
                 border-bottom: 2px solid #dee2e6;
                 text-align: center;
+                font-size: 0.875rem;
+                padding: 0.5rem;
             }
 
             .table td,
             .table th {
                 border: none;
                 text-align: center;
+                font-size: 0.875rem;
+                padding: 0.5rem;
             }
 
             .action-buttons .btn {
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.25rem;
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
             }
 
-            .action-buttons .btn+.btn {
-                margin-left: 0.5rem;
+            .action-buttons .btn + .btn {
+                margin-left: 0.25rem;
             }
 
             .modal-body,
             .modal-footer {
                 text-align: left;
+                padding: 1rem;
             }
 
             .pagination .page-link:hover {
@@ -65,11 +78,18 @@
             .input-group .form-control {
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
+                font-size: 0.875rem;
             }
 
             .input-group .input-group-append .btn {
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
+                font-size: 0.875rem;
+            }
+
+            .btn {
+                font-size: 0.875rem;
+                padding: 0.375rem 0.75rem;
             }
 
             .invalid-feedback {
@@ -84,14 +104,6 @@
     </head>
 
     <div>
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-center">
-                    <h3>Dosen</h3>
-                </div>
-            </div>
-        </div>
-
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
@@ -177,7 +189,7 @@
                                                                 </div>
                                                                 <div class="form-group mb-3">
                                                                     <label for="edit_nidn{{ $dosen->id }}"
-                                                                        class="font-weight-bold">NIDN</label>
+                                                                        class="font-weight-bold">NIDN - Dosen</label>
                                                                     <input type="text"
                                                                         class="form-control rounded"
                                                                         id="edit_nidn{{ $dosen->id }}"
@@ -282,7 +294,7 @@
                                         <input type="text" class="form-control rounded" id="nama" name="nama" required>
                                     </div>
                                     <div class="form-group mb-3">
-                                        <label for="nidn" class="font-weight-bold">NIDN</label>
+                                        <label for="nidn" class="font-weight-bold">NIDN - Dosen</label>
                                         <input type="text" class="form-control rounded" id="nidn" name="nidn" required>
                                         <div class="invalid-feedback" id="nidn_feedback">NIDN harus berupa angka dan
                                             harus 10 karakter.</div>
@@ -407,5 +419,5 @@
 
             </div>
         </div>
-
+    </div>
 </x-app-layout>

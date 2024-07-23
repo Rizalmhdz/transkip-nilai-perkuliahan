@@ -33,7 +33,8 @@
                         
                         <button type="button" class="btn btn-outline-dark me-2"> Total Data : {{ $total }}</button>
                         @if($isPrint)
-                        <button type="button" class="btn btn-success" onclick="window.location.href='{{ route('cetak-rekap-nilai', ['nim' => $mahasiswas[0]->nim]) }}'">
+                        {{-- <button type="button" class="btn btn-success" onclick="window.location.href='{{ route('cetak-rekap-nilai', ['nim' => $mahasiswas[0]->nim]) }}'"> --}}
+                        <button type="button" class="btn btn-success" onclick="window.location.href='{{ route('cetak-rekap-nilai', ['nim' => $nim]) }}'">
                             <i class="fa fa-print me-2"></i> CETAK REKAP NILAI</button>
                         @endif
                     </div>
@@ -58,7 +59,6 @@
                                         <th>Mata Kuliah</th>
                                         <th>Dosen Pengampu</th>
                                         <th>Aksi</th>
-                                        <th>Edit Nilai</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -91,7 +91,7 @@
                                         <td>{{ $hasil_studi->mataKuliah->nama_mata_kuliah }}</td>
                                         <td>{{ $hasil_studi->mataKuliah->dosen->nama }}</td>
                                         <td class="action-buttons">
-                                            <button class="btn btn-{{  $user_dosen_id != '' &&  $user_dosen_id === $hasil_studi->mataKuliah->dosen->nidn ? '' : 'outlined-'}}warning ms-2" data-toggle="modal" {{  $user_dosen_id != '' &&  $user_dosen_id === $hasil_studi->mataKuliah->dosen->nidn ? '' : 'disabled'}}
+                                            <button class="btn btn-warning ms-2" data-toggle="modal"
                                                 data-target="#editModal{{ $hasil_studi->id }}"
                                                 onclick="editHasilStudi({{ $hasil_studi->id }}, '{{ $hasil_studi->nilai }}')">
                                                 <i class="fa fa-edit"></i>

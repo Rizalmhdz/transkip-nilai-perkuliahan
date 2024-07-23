@@ -4,46 +4,59 @@
             {{ __('Users') }}
         </h2>
     </x-slot>
-    
+
     <head>
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <style>
             .modal-title {
                 text-align: center;
                 text-transform: capitalize;
                 width: 100%;
+                font-size: 1rem;
             }
             .modal-header {
                 display: flex;
                 font-weight: bold;
                 justify-content: center;
                 align-items: center;
+                padding: 1rem;
             }
             .modal-header .close {
                 position: absolute;
-                right: 15px;
+                right: 10px;
             }
             .form-control {
                 border: 1px solid #ced4da;
+                font-size: 0.875rem;
             }
             .table-responsive {
                 overflow-x: auto;
+                margin-left: -1rem;
+                margin-right: -1rem;
             }
             .table thead th {
                 border-bottom: 2px solid #dee2e6;
                 text-align: center;
+                font-size: 0.875rem;
+                padding: 0.5rem;
             }
             .table td, .table th {
                 border: none;
                 text-align: center;
+                font-size: 0.875rem;
+                padding: 0.5rem;
             }
             .action-buttons .btn {
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.25rem;
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
             }
             .action-buttons .btn + .btn {
-                margin-left: 0.5rem;
+                margin-left: 0.25rem;
             }
             .modal-body, .modal-footer {
                 text-align: left;
+                padding: 1rem;
             }
             .pagination .page-link:hover {
                 background-color: #343a40;
@@ -52,10 +65,12 @@
             .input-group .form-control {
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
+                font-size: 0.875rem;
             }
             .input-group .input-group-append .btn {
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
+                font-size: 0.875rem;
             }
             .invalid-feedback {
                 display: none;
@@ -68,14 +83,6 @@
     </head>
 
     <div>
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-center">
-                    <h3>Users</h3>
-                </div>
-            </div>
-        </div>
-
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
@@ -104,12 +111,12 @@
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'email' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
-                                        <th>
+                                        {{-- <th>
                                             <a href="?sort=level&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
                                                 Level
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'level' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
-                                        </th>
+                                        </th> --}}
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -119,11 +126,11 @@
                                         <td>{{ $index + 1 + ($users->currentPage() - 1) * $users->perPage() }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>{{ $user->level }}</td>
+                                        {{-- <td>{{ $user->level }}</td> --}}
                                         <td class="action-buttons">
                                             <button class="btn btn-warning ms-2" data-toggle="modal"
                                                 data-target="#editModal{{ $user->id }}"
-                                                onclick="editUser({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}', '{{ $user->level }}')">
+                                                onclick="editUser({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}')">
                                                 <i class="fa fa-edit"></i>
                                             </button>
                                             <button class="btn btn-danger" data-toggle="modal"
@@ -167,7 +174,7 @@
                                                                         id="edit_email{{ $user->id }}"
                                                                         name="email" required>
                                                                 </div>
-                                                                <div class="form-group mb-3">
+                                                                {{-- <div class="form-group mb-3">
                                                                     <label for="edit_level{{ $user->id }}"
                                                                         class="font-weight-bold">Level</label>
                                                                     <select class="form-control rounded"
@@ -177,7 +184,7 @@
                                                                         <option value="2">2</option>
                                                                         <option value="3">3</option>
                                                                     </select>
-                                                                </div>
+                                                                </div> --}}
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
@@ -262,14 +269,14 @@
                                         <label for="password" class="font-weight-bold">Password</label>
                                         <input type="password" class="form-control rounded" id="password" name="password" required>
                                     </div>
-                                    <div class="form-group mb-3">
+                                    {{-- <div class="form-group mb-3">
                                         <label for="level" class="font-weight-bold">Level</label>
                                         <select class="form-control rounded" id="level" name="level" required>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
                                         </select>
-                                    </div>
+                                    </div> --}}
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Batalkan</button>
@@ -296,10 +303,10 @@
                         $(this).find('form')[0].reset();
                     });
 
-                    window.editUser = function (id, name, email, level) {
+                    window.editUser = function (id, name, email) {
                         $('#edit_name' + id).val(name);
                         $('#edit_email' + id).val(email);
-                        $('#edit_level' + id).val(level);
+                        // $('#edit_level' + id).val(level);
                     }
 
                     $('#searchButton').on('click', function () {
@@ -313,5 +320,5 @@
 
             </div>
         </div>
-
+    </div>
 </x-app-layout>

@@ -4,46 +4,59 @@
             {{ __('Prodi') }}
         </h2>
     </x-slot>
-    
+
     <head>
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <style>
             .modal-title {
                 text-align: center;
                 text-transform: capitalize;
                 width: 100%;
+                font-size: 1rem;
             }
             .modal-header {
                 display: flex;
                 font-weight: bold;
                 justify-content: center;
                 align-items: center;
+                padding: 1rem;
             }
             .modal-header .close {
                 position: absolute;
-                right: 15px;
+                right: 10px;
             }
             .form-control {
                 border: 1px solid #ced4da;
+                font-size: 0.875rem;
             }
             .table-responsive {
                 overflow-x: auto;
+                margin-left: -1rem;
+                margin-right: -1rem;
             }
             .table thead th {
                 border-bottom: 2px solid #dee2e6;
                 text-align: center;
+                font-size: 0.875rem;
+                padding: 0.5rem;
             }
             .table td, .table th {
                 border: none;
                 text-align: center;
+                font-size: 0.875rem;
+                padding: 0.5rem;
             }
             .action-buttons .btn {
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.25rem;
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
             }
             .action-buttons .btn + .btn {
-                margin-left: 0.5rem;
+                margin-left: 0.25rem;
             }
             .modal-body, .modal-footer {
                 text-align: left;
+                padding: 1rem;
             }
             .pagination .page-link:hover {
                 background-color: #343a40;
@@ -52,23 +65,28 @@
             .input-group .form-control {
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
+                font-size: 0.875rem;
             }
             .input-group .input-group-append .btn {
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
+                font-size: 0.875rem;
+            }
+            .btn {
+                font-size: 0.875rem;
+                padding: 0.375rem 0.75rem;
+            }
+            .related-link {
+                display: block;
+                margin-top: 0.25rem;
+                font-size: 0.75rem;
+                text-decoration: underline;
+                color: #007bff;
             }
         </style>
     </head>
 
     <div>
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-center">
-                    <h3>Prodi</h3>
-                </div>
-            </div>
-        </div>
-
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
             <div class="container">
                 <div class="row mb-3 d-flex justify-content-between">
@@ -91,9 +109,10 @@
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'nama_prodi' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
-                                        <th>
+                                        
+                                        <th>Ketua Prodi</th><th>
                                             <a href="?sort=ketua_prodi&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
-                                                Ketua Prodi
+                                                NIDN
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'ketua_prodi' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
                                             </a>
                                         </th>
@@ -105,6 +124,7 @@
                                     <tr>
                                         <td>{{ $index + 1 + ($prodis->currentPage() - 1) * $prodis->perPage() }}</td>
                                         <td>{{ $prodi->nama_prodi }}</td>
+                                        <td>{{ $ketua_prodi[$prodi->ketua_prodi]->nama }}</td>
                                         <td>{{ $prodi->ketua_prodi }}</td>
                                         <td class="action-buttons">
                                             <button class="btn btn-warning ms-2" data-toggle="modal"
@@ -147,12 +167,12 @@
                                                                 </div>
                                                                 <div class="form-group mb-3">
                                                                     <label for="edit_ketua_prodi{{ $prodi->id }}"
-                                                                        class="font-weight-bold">Ketua Prodi</label>
+                                                                        class="font-weight-bold">NIDN - Dosen</label>
                                                                     <select class="form-control rounded"
                                                                         id="edit_ketua_prodi{{ $prodi->id }}"
                                                                         name="ketua_prodi" required>
                                                                         @foreach($dosens as $dosen)
-                                                                            <option value="{{ $dosen->nidn }}">{{ $dosen->nama }}</option>
+                                                                            <option value="{{ $dosen->nidn }}">{{ $dosen->nidn }} - {{ $dosen->nama }}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -207,9 +227,7 @@
                             </table>
                         </div>
                         <div class="col-12 mb-2">
-                            <div>
-                                {{ $prodis->links() }}
-                            </div>
+                            {{ $prodis->links() }}
                         </div>
                     </div>
                 </div>
@@ -233,10 +251,10 @@
                                         <input type="text" class="form-control rounded" id="nama_prodi" name="nama_prodi" required>
                                     </div>
                                     <div class="form-group mb-3">
-                                        <label for="ketua_prodi" class="font-weight-bold">Ketua Prodi</label>
+                                        <label for="ketua_prodi" class="font-weight-bold">NIDN - Dosen</label>
                                         <select class="form-control rounded" id="ketua_prodi" name="ketua_prodi" required>
                                             @foreach($dosens as $dosen)
-                                                <option value="{{ $dosen->nidn }}">{{ $dosen->nama }}</option>
+                                                <option value="{{ $dosen->nidn }}">{{ $dosen->nidn }} - {{ $dosen->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -279,8 +297,7 @@
                     });
                 });
                 </script>
-
             </div>
         </div>
-
+    </div>
 </x-app-layout>

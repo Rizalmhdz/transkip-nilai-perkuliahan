@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
                 'email' => $email,
                 'email_verified_at' => now(),
                 'password' => Hash::make('password'), // Sesuaikan password default
-                'level' => 2,
+                // 'level' => 2,
                 'remember_token' => Str::random(10),
             ]);
         }
@@ -41,7 +41,7 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
                 'password' => Hash::make('admin123'),
                 'remember_token' => Str::random(20),
-                'level' => 1,
+                // 'level' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -52,7 +52,7 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
                 'password' => Hash::make('ani1234ani123'),
                 'remember_token' => Str::random(20),
-                'level' => 2,
+                // 'level' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

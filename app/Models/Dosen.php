@@ -13,9 +13,14 @@ class Dosen extends Model
         'nama', 'nidn', 'email_dosen',
     ];
 
-    public function user()
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class, 'email_dosen', 'email');
+    // }
+
+    public function direktur()
     {
-        return $this->belongsTo(User::class, 'email_dosen', 'email');
+        return $this->belongsTo(Direktur::class, 'nidn', 'nidn');
     }
 
     public function prodis()

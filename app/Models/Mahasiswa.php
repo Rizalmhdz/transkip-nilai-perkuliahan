@@ -18,6 +18,7 @@ class Mahasiswa extends Model
         return $this->belongsTo(Prodi::class, 'prodi', 'id');
     }
 
+    
     public function dosen()
     {
         return $this->belongsTo(Dosen::class, 'dosen_akademik', 'nidn');

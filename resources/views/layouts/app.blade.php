@@ -1,10 +1,3 @@
-@php
-    $authority_level = Auth::user()->level;
-@endphp
-
-
-
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -67,7 +60,7 @@
         <div x-data="{ isSidebarOpen: window.innerWidth > 768 }" @resize.window="isSidebarOpen = window.innerWidth > 768 ? true : false" class="d-flex">
             <!-- Sidebar ketika ukuran layar desktop -->
             <div :class="isSidebarOpen ? 'sidebar-expand sticky-sidebar' : 'sidebar-collapse sticky-sidebar'" class="bg-body-tertiary p-3 flex-shrink-0">
-                <x-sidebar-admin :authority_level="$authority_level" />
+                <x-sidebar-admin/>
             </div>
 
             <!-- Konten utama -->

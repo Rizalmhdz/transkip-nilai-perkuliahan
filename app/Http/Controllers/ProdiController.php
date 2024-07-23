@@ -24,8 +24,13 @@ class ProdiController extends Controller
         $prodis = $query->orderBy($sort, $direction)->paginate(20);
         $total = $prodis->total();
         $dosens = Dosen::all();
+        $ketua_prodi = [];
+        foreach($prodis as $prodi){
+            $ketua_prodi[$prodi->ketua_prodi] = Dosen::where('nidn', $prodi->ketua_prodi)->first();
+        }
+       
 
-        return view('prodi_page', compact('prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens'));
+        return view('prodi_page', compact('prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'ketua_prodi'));
     }
 
     public function create()

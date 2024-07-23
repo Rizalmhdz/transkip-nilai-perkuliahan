@@ -7,6 +7,8 @@ use App\Models\MataKuliah;
 use App\Models\Mahasiswa;
 use App\Models\Prodi;
 use App\Models\Dosen;
+use App\Models\User;
+use App\Models\KaryaTulis;
 use App\Models\DosenProdi;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,37 +16,37 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $authority_level = $user->level;
+        $totalUsers = User::count();
+            $totalDosens = Dosen::count();
+            $totalProdis = Prodi::count();
+            $totalMahasiswas = Mahasiswa::count();
+            $totalKaryaTuliss = KaryaTulis::count();
+            $totalMataKuliahs = MataKuliah::count();
+            $totalHasilStudis = HasilStudi::count();
         
-        $mahasiswaBimbinganAkademik = 0;
-        $mataKuliahDiampu = 0;
-        $mahasiswaBimbinganKaryaTulis = 0;
-        // $karya_tulis = 
-
-        if ($authority_level == 2) {
-            $dosen = Dosen::where('email_dosen', $user->email)->first();
-            $mahasiswaBimbinganAkademik = Mahasiswa::where('dosen_akademik', $dosen->nidn)->count();
-            $mataKuliahDiampu = MataKuliah::where('dosen_pengampu', $dosen->nidn)->count();
-            // $mahasiswaBimbinganKaryaTulis = Mahasiswa::whereHas('nim', function ($query) use ($dosen) {
-            //     $query->where('pembimbing', $dosen->nidn);
-            // })->count();
+            $prodiStats = Prodi::withCount(['dosens', 'mahasiswas', 'mataKuliahs', 'mahasiswas as mahasiswa_lulus' => function ($query) {
+                $query->whereNotNull('tahun_lulus');
+            }])->get()->mapWithKeys(function ($prodi) {
+                return [
+                    $prodi->nama_prodi => [
+                        'prodi_id' => $prodi->id,
+                        'dosens' => $prodi->dosens_count,
+                        'mahasiswas' => $prodi->mahasiswas_count,
+                        'mata_kuliahs' => $prodi->mata_kuliahs_count,
+                        'mahasiswa_lulus' => $prodi->mahasiswa_lulus,
+                    ],
+                ];
+            });
+        
+            return view('dashboard', compact(
+                'totalUsers',
+                'totalDosens',
+                'totalProdis',
+                'totalMahasiswas',
+                'totalKaryaTuliss',
+                'totalMataKuliahs',
+                'totalHasilStudis',
+                'prodiStats'
+            ));
         }
-
-        $total = DosenProdi::count();
-        $dosen_prodis = DosenProdi::paginate(20);
-        $dosens = Dosen::all();
-        $prodis = Prodi::all();
-
-        return view('dashboard', compact(
-            'mahasiswaBimbinganAkademik', 
-            'mataKuliahDiampu', 
-            'mahasiswaBimbinganKaryaTulis', 
-            'dosen_prodis', 
-            'dosens', 
-            'prodis', 
-            'total', 
-            'authority_level'
-        ));
-    }
 }

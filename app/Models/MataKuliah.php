@@ -28,8 +28,10 @@ class MataKuliah extends Model
         return $this->belongsTo(Prodi::class, 'prodi', 'id');
     }
 
-    public function hasilStudis()
+    public function hasilStudi()
     {
         return $this->hasMany(HasilStudi::class, 'id_mata_kuliah', 'id');
     }
+
+    
 }

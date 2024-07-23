@@ -1,5 +1,3 @@
-@props(['authority_level'])
-
 <div class="d-flex flex-column flex-shrink-0 p-2 bg-body-tertiary" id="sidebar">
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
@@ -8,7 +6,6 @@
                 <span class="ms-2 d-none d-md-inline">Dashboard</span>
             </a>
         </li>
-        @if($authority_level == 1)
         <li class="nav-item">
             <a href="{{ route('user.index') }}" class="nav-link {{ request()->routeIs('user.index') ? 'active bg-dark text-white' : 'text-dark' }}">
                 <i class="fas fa-users"></i>
@@ -27,14 +24,12 @@
                 <span class="ms-2 d-none d-md-inline">Prodi</span>
             </a>
         </li>
-        @endif
-        {{-- <li class="nav-item">
+        <li class="nav-item">
             <a href="{{ route('dosen-prodi.index') }}" class="nav-link {{ request()->routeIs('dosen-prodi.index') ? 'active bg-dark text-white' : 'text-dark' }}">
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span class="ms-2 d-none d-md-inline">Dosen Prodi</span>
             </a>
-        </li> --}}
-        @if($authority_level == 1)
+        </li>
         <li class="nav-item">
             <a href="{{ route('direktur.index') }}" class="nav-link {{ request()->routeIs('direktur.index') ? 'active bg-dark text-white' : 'text-dark' }}">
                 <i class="fas fa-user-tie"></i>
@@ -47,7 +42,6 @@
                 <span class="ms-2 d-none d-md-inline">Kategori Matkul</span>
             </a>
         </li>
-        @endif
         <li class="nav-item">
             <a href="{{ route('mahasiswa.index') }}" class="nav-link {{ request()->routeIs('mahasiswa.index') ? 'active bg-dark text-white' : 'text-dark' }}">
                 <i class="fas fa-user-graduate"></i>

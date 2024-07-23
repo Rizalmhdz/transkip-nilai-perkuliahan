@@ -80,7 +80,7 @@ class HasilStudiController extends Controller
         $ipk = $totalSks ? round($totalNilai / $totalSks, 2) : 0;
         $prodis = Prodi::all();
 
-        return view('hasil_studi_page', compact('hasil_studis', 'total', 'sort', 'direction', 'searchKeyword', 'mata_kuliahs', 'mahasiswas', 'prodis', 'prodi_id', 'mata_kuliah_id', 'nim', 'nilai', 'filter_type', 'user', 'user_dosen_id', 'isPrint', 'totalSks', 'ipk'));
+        return view('hasil_studi_page', compact('hasil_studis', 'total', 'sort', 'direction', 'searchKeyword', 'mata_kuliahs', 'mahasiswas', 'prodis', 'prodi_id', 'mata_kuliah_id', 'nim', 'nilai', 'filter_type', 'user', 'user_dosen_id', 'isPrint', 'totalSks', 'ipk', 'nim'));
     }
 
     public function create()
