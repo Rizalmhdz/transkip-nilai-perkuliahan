@@ -127,19 +127,21 @@ foreach ($rekap as $kategori => $items) {
         // Data untuk halaman pertama
         $pageData = compact('mahasiswa', 'jumlah_karya_tulis', 'row1','nim', 'row2','rekap', 'totalNilai', 'karya_tulis', 'totalSks', 'ipk', 'hasilStudiByKategori', 'kaprodi', 'direktur', 'prodi');
 
-        // Generate halaman pertama
-        $page1 = view('rekap_1', $pageData)->render();
-
         // Generate halaman kedua (sesuaikan query data tambahan sesuai kebutuhan)
         $graduates = [];
         $wakil1 = [];
         $tahun_ajaran = date('Y');
+        // Generate halaman pertama
+        $page1 = view('rekap_1', $pageData)->render();
+
+      
         // $page2Data = compact('graduates', 'wakil1', 'kaprodi', 'tahun_ajaran', 'mahasiswa', 'prodi');
         $page2Data = $pageData;
         $page2 = view('rekap_2', $page2Data)->render();
 
         // Gabungkan konten dari dua halaman
-        $html = $page1 . '<div style="page-break-after: always;"></div>' . $page2;
+        // $html = $page1 . '<div style="page-break-after: always;"></div>' . $page2;
+        $html = $page1 . $page2;
 
         // Inisialisasi DomPDF
         $pdf = Pdf::loadHTML($html)

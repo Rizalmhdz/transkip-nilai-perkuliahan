@@ -13,7 +13,7 @@
         }
         .container {
             width: 100%;
-            padding: 20px;
+            /* padding: 20px; */
             box-sizing: border-box;
         }
         .header, .footer {
@@ -22,10 +22,11 @@
         .header h2 {
             margin: 0;
         }
-        .content {
+        /* .content {
             margin-top: 20px;
-        }
+        } */
         table {
+            margin: 0;
             width: 100%;
             border-collapse: collapse;
         }
@@ -36,23 +37,23 @@
             padding: 8px;
             text-align: center;
         }
-        .footer-signature {
+        /* .footer-signature {
             margin-top: 50px;
         }
         .footer-signature div {
             width: 50%;
             display: inline-block;
             text-align: center;
-        }
+        } */
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h2>Graduation Summary</h2>
+            <h2>{{ $prodi->nama_prodi}}</h2>
             <p>{{$mahasiswa->tahun_lulus != ''? 'TA.' +  $mahasiswa->tahun_lulus : 'Belum Lulus'}}</p>
         </div>
-        <div class="content">
+        <div>
             <table>
                 <thead>
                     <tr>
@@ -61,7 +62,7 @@
                         <th>Nama</th>
                         <th>Prodi</th>
                         <th>IPK</th>
-                        <th>Jumlah Karya Tulis</th>
+                        <th>Judul Karya Tulis</th>
                         <th>Tahun Lulus</th>
                     </tr>
                 </thead>
@@ -72,7 +73,7 @@
                         <td>{{ $mahasiswa->nama_lengkap }}</td>
                         <td>{{ $prodi->nama_prodi}}</td>
                         <td> {{$ipk }}</td>
-                        <td> {{ $jumlah_karya_tulis}}</td>
+                        <td> {{ $karya_tulis->judul}}</td>
                         <td> {{$mahasiswa->tahun_lulus != ''? $mahasiswa->tahun_lulus : 'Belum Lulus'}}</td>
                     </tr>
                     <!-- Add more rows as needed -->

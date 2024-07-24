@@ -100,9 +100,12 @@ $row2additional = $maxHeight - $row2Height;
             padding: 0;
             font-size: 9px;
         }
+        .header p {
+           margin-top: 0px;
+        }
         .content {
             margin-left: 35px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .content p {
             margin: 0;
@@ -213,6 +216,11 @@ $row2additional = $maxHeight - $row2Height;
         }
         .footer-signature .row-atas tr{
             margin-top: 0px;
+            vertical-align: bottom;
+        }
+        .footer-signature .row-atas p{
+            line-height: 0.5;
+            margin-top: 10px;
             vertical-align: bottom;
         }
 
@@ -399,10 +407,10 @@ $row2additional = $maxHeight - $row2Height;
                     <table class="no-border">
                         <tbody > 
                             <tr class="row-atas">
-                                <td class="col-depan"><p>Ketua Program Studi</p></td>
+                                <td class="col-depan"><p>Ketua Program Studi,</p></td>
                                 <td class="col-tengah"></td>
                                 <td  class="col-belakang"><p>Muara Teweh, {{ formatTanggalLahir(date('Y-m-d')) }}</p>
-                                    <p>Direktur</p>
+                                    <p>Direktur,</p>
                                 </td>
                             </tr>
                             <tr class="row-tengah">
