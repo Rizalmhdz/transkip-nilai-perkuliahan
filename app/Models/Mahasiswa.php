@@ -10,7 +10,7 @@ class Mahasiswa extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nim', 'nama_lengkap', 'tempat_lahir', 'tanggal_lahir', 'angkatan', 'prodi', 'dosen_akademik', 'tahun_lulus',
+        'nim', 'nama_lengkap', 'tempat_lahir', 'tanggal_lahir', 'angkatan', 'prodi', 'dosen_akademik', 'tahun_lulus', 'tanggal_yudisium',
     ];
 
     public function prodi()

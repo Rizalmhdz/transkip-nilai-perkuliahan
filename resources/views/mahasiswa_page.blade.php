@@ -66,6 +66,12 @@
                                             </a>
                                         </th>
                                         <th>
+                                            <a href="?sort=tanggal_yudisium&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
+                                                Tanggal Yudisium
+                                                <i class="ms-3 fa fa-sort{{ request('sort') == 'tanggal_yudisium' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
+                                            </a>
+                                        </th>
+                                        <th>
                                             <a href="?sort=dosen_akademik&direction={{ request('direction') == 'asc' ? 'desc' : 'asc' }}">
                                                 Dosen Akademik
                                                 <i class="ms-3 fa fa-sort{{ request('sort') == 'dosen_akademik' ? (request('direction') == 'asc' ? '-up' : '-down') : '' }}"></i>
@@ -88,6 +94,7 @@
                                             @endforeach
                                         </td>
                                         <td>{{ $mahasiswa->tahun_lulus ?? 'Belum lulus' }}</td>
+                                        <td>{{ $mahasiswa->tanggal_yudisium ?? 'Belum lulus' }}</td>
                                         <td>
                                             @foreach($dosens as $dosen)
                                                 {{ $dosen->nidn == $mahasiswa->dosen_akademik ?  $dosen->nama : ''}}

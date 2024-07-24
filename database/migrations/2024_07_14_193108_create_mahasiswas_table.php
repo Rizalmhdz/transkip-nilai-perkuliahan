@@ -25,6 +25,7 @@ class CreateMahasiswasTable extends Migration
             $table->string('dosen_akademik');
             $table->foreign('dosen_akademik')->references('nidn')->on('dosens');
             $table->year('tahun_lulus')->nullable();
+            $table->date('tanggal_yudisium')->nullable();
             $table->timestamps();
         });
     }

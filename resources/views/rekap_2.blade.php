@@ -37,21 +37,21 @@
             padding: 8px;
             text-align: center;
         }
-        /* .footer-signature {
-            margin-top: 50px;
+
+       .footer-signature {
+            margin-top: 10px;
+            line-height: 0.5;
         }
-        .footer-signature div {
-            width: 50%;
-            display: inline-block;
-            text-align: center;
-        } */
+       .footer-signature .row-tengah td{
+           height: 50px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h2>{{ $prodi->nama_prodi}}</h2>
-            <p>{{$mahasiswa->tahun_lulus != ''? 'TA.' +  $mahasiswa->tahun_lulus : 'Belum Lulus'}}</p>
+            <p>{{$mahasiswa->tahun_lulus? 'TA.' .  $mahasiswa->tahun_lulus : 'Belum Lulus'}}</p>
         </div>
         <div>
             <table>
@@ -74,7 +74,7 @@
                         <td>{{ $prodi->nama_prodi}}</td>
                         <td> {{$ipk }}</td>
                         <td> {{ $karya_tulis->judul}}</td>
-                        <td> {{$mahasiswa->tahun_lulus != ''? $mahasiswa->tahun_lulus : 'Belum Lulus'}}</td>
+                        <td> {{$mahasiswa->tahun_lulus? $mahasiswa->tahun_lulus : 'Belum Lulus'}}</td>
                     </tr>
                     <!-- Add more rows as needed -->
                 </tbody>
@@ -84,40 +84,21 @@
             <table class="no-border">
                 <tbody>
                     <tr>
-                        <td><p>Mengetahui</p>
+                        <td class="col-depan"><p>Mengetahui</p>
                            <p>Direktur</p></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><p>Muara Teweh, {{ formatTanggalLahir(date('Y-m-d')) }}</p>
+                        <td class="col-tengah"></td>
+                        <td class="col-belakang"><p>Muara Teweh, {{ formatTanggalLahir(date('Y-m-d')) }}</p>
                             <p>Ketua Program Studi</p>
                         </td>
                     </tr>
-                    <tr></tr>
-                    <tr></tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr class="row-tengah">
+                        <td colspan="3"></td>
                     </tr>
-                    <tr></tr>
-                    <tr></tr>
                     <tr>
                        
                         <td><p><b><u>{{ $direktur->nama }}<u></b></p>
                             <p>NIDN: {{ $direktur->nidn }}</p>
                         </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
                         <td></td>
                         <td><p><b><u>{{ $kaprodi->nama }}</u></b></p>
                             <p>NIDN: {{ $kaprodi->nidn }}</p>

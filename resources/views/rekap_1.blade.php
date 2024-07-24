@@ -378,7 +378,7 @@ $row2additional = $maxHeight - $row2Height;
                                         </tr>
                                         <tr>
                                             <td>Tanggal Yudisium</td>
-                                            <td>:  {{ formatTanggalLahir($mahasiswa->tanggal_lahir) }}</td>
+                                            <td>:  {{ formatTanggalLahir($mahasiswa->tanggal_yudisium) }}</td>
                                         </tr>
                                         <tr>
                                             <td colspan="2">Keterangan: N-Nilai (A=4, B=3, C=2, D=1, E=0)</td>
