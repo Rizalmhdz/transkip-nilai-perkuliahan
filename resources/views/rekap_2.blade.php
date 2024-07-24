@@ -69,7 +69,7 @@
                 <tbody>
                     <tr>
                         <td>1</td>
-                        <td>{{ $nim }}</td>
+                        <td>{{ substr($mahasiswa->nim, 0, 5) }}.{{ substr($mahasiswa->nim, 5, 2) }}.{{ substr($mahasiswa->nim, 7, 3) }}</td>
                         <td>{{ $mahasiswa->nama_lengkap }}</td>
                         <td>{{ $prodi->nama_prodi}}</td>
                         <td> {{$ipk }}</td>
