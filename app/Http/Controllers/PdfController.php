@@ -62,7 +62,9 @@ class PdfController extends Controller
         $totalNilai = 0;
         $totalSks = 0;
 
+        $karya_tulis_nim = KaryaTulis::where('nim', $nim);
         $karya_tulis = KaryaTulis::where('nim', $nim)->first();
+        $jumlah_karya_tulis = $karya_tulis_nim->count();
         $hasilStudi = HasilStudi::with('mataKuliah.kategoriMatkul')->where('nim', $nim)->get();
 
 // Kelompokkan hasil studi berdasarkan kategori mata kuliah
@@ -123,16 +125,17 @@ foreach ($rekap as $kategori => $items) {
         $ipk = $totalSks ? round($totalNilai / $totalSks, 2) : 0;
 
         // Data untuk halaman pertama
-        $page1Data = compact('mahasiswa', 'row1','nim', 'row2','rekap', 'totalNilai', 'karya_tulis', 'totalSks', 'ipk', 'hasilStudiByKategori', 'kaprodi', 'direktur', 'prodi');
+        $pageData = compact('mahasiswa', 'jumlah_karya_tulis', 'row1','nim', 'row2','rekap', 'totalNilai', 'karya_tulis', 'totalSks', 'ipk', 'hasilStudiByKategori', 'kaprodi', 'direktur', 'prodi');
 
         // Generate halaman pertama
-        $page1 = view('rekap_1', $page1Data)->render();
+        $page1 = view('rekap_1', $pageData)->render();
 
         // Generate halaman kedua (sesuaikan query data tambahan sesuai kebutuhan)
         $graduates = [];
         $wakil1 = [];
         $tahun_ajaran = date('Y');
-        $page2Data = compact('graduates', 'wakil1', 'kaprodi', 'tahun_ajaran', 'mahasiswa', 'prodi');
+        // $page2Data = compact('graduates', 'wakil1', 'kaprodi', 'tahun_ajaran', 'mahasiswa', 'prodi');
+        $page2Data = $pageData;
         $page2 = view('rekap_2', $page2Data)->render();
 
         // Gabungkan konten dari dua halaman

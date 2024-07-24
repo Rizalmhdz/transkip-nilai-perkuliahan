@@ -25,6 +25,18 @@ function getLabelNilai($nilai){
     return $label;
 }
 
+function getLabelPredikat($ipk){
+    $predikat = '';
+    if($ipk > 3.5) {
+        $predikat = "Cum laude";
+    } else if($ipk > 2.75 && $ipk <= 3.5){
+        $predikat = "Sangat memuaskan";
+    } else {
+        $predikat = "Memuaskan";
+    }
+    return $predikat;
+}
+
 function formatTanggalLahir($tanggal) {
     setlocale(LC_TIME, 'id_ID.UTF-8');
     return strftime('%d %B %Y', strtotime($tanggal));
@@ -38,6 +50,41 @@ function getInisialProdi($nama_prodi) {
     }
     return $inisial;
 }
+
+// Function to calculate the height of a row
+function calculateRowHeight($row, $footer = false) {
+    $headerHeight = 20;
+    $categoryHeight = 32;
+    $itemHeight = 12;
+    $footerHeight = 20;
+
+    $categories = [];
+    foreach ($row as $studi) {
+        $categories[$studi['kategori']][] = $studi;
+    }
+
+    $numCategories = count($categories);
+    $numItems = count($row);
+
+    $height = $headerHeight + ($numCategories * $categoryHeight) + ($numItems * $itemHeight);
+
+    if ($footer) {
+        $height += $footerHeight;
+    }
+
+    return $height;
+}
+
+// Calculate heights for row1 and row2
+$row1Height = calculateRowHeight($row1);
+$row2Height = calculateRowHeight($row2, true); // row2 includes the footer
+
+// Determine the maximum height
+$maxHeight = max($row1Height, $row2Height) + 20;
+
+$row1additional = $maxHeight - $row1Height;
+$row2additional = $maxHeight - $row2Height;
+
 ?>
 
 <!DOCTYPE html>
@@ -53,44 +100,9 @@ function getInisialProdi($nama_prodi) {
             padding: 0;
             font-size: 9px;
         }
-        .container {
-            width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .header, .footer {
-            text-align: center;
-        }
-        .header h2 {
-            margin: 0;
-        }
         .content {
-            margin-top: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 4px;
-            text-align: center;
-        }
-        td.mata-kuliah {
-            text-align: left;
-        }
-        tbody tr td {
-            border: none;
-        }
-        .no-border {
-            border: none;
-        }
-        .footer-signature {
-            margin-top: 10px;
-        }
-        .footer-signature div {
-            width: 45%;
-            display: inline-block;
-            text-align: center;
+            margin-left: 35px;
+            margin-bottom: 20px;
         }
         .content p {
             margin: 0;
@@ -99,20 +111,120 @@ function getInisialProdi($nama_prodi) {
             display: inline-block;
             width: 200px; /* Adjust width as needed */
         }
+        .no-row-border td {
+            border-top: none; /* Hilangkan border atas untuk baris */
+            border-bottom: none; /* Hilangkan border bawah untuk baris */
+        }
         .second-row-table td {
-            line-height: 1; /* Jarak antar baris lebih rapat */
-            padding-left: 10px; /* Margin kiri sedikit */
+            font-size: 10px;
+            height: 70px;
+        }
+        .mhs_stat td p {
+            margin-top: 0;
+            line-height: 0.4;
+        }
+        .mhs_stat table {
+            border: none;
+        }
+        .mhs_stat table tr td {
+            padding: 3px 6px;
+            border: none;
+            text-align: left;
+            line-height: 0.4;
+            height: 8px;
+        }
+        .karya_tulis_stat table tr td {
+            border: none;
+            margin-top: 0px;
+            text-align: left;
+            line-height: 0.4;
+        }
+        .karya_tulis_stat .judul {
+            text-align: center;
+        }
+        .no-border {
+            padding: 2;
+            border: none;
+        }
+        
+        .no-column {
+            width: 8px; /* Lebar untuk kolom 3 karakter */
+        }
+        .narrow-column {
+            width: 10px; /* Lebar untuk kolom 3 karakter */
+        }
+        
+        .row1-th th, .row2-th th {
+            border-bottom: 2px solid black;
+            padding: 2px 4px;
+            font-size: 10px;
+            height: 20px;
+        }
+
+        .narrow-column-nxk {
+            width: 30px; /* Lebar untuk kolom 3 karakter */
+        }
+        /* CSS untuk menyesuaikan tinggi baris */
+        .row-rekap td table{
+            font-size: 8px;
+        }
+        .row-rekap td {
+            width: 50%;
+        }
+        .row1 tr, .row2 tr {
+            width: 100%;
+            font-size: 10px;
+            text-align: left;
+            padding: 2px 4px;
+            height: 20px; /* Set height for headers */
+        }
+        .row1 td, .row2 td {
+           padding: 2px 4px;
+           height: 12px;
+        }
+        .row1 .mata-kuliah, .row2 .mata-kuliah{
+            padding-left: 8px;
             text-align: left;
         }
-        .second-row-table td span {
-            display: inline-block;
-            width: 100px; /* Adjust width as needed for alignment */
+        .category-row td {
+            font-size: 10px;
+            padding: 20px 4px 2px 4px;
         }
+
+        .row1-additional td{
+            height: <?= $row1additional ?>px;
+        }
+
+        .row2-additional td{
+            height: <?= $row2additional ?>px;
+        }
+
+        .tfooter td {
+            font-size: 10px;
+            padding: 2px 4px;
+            height: 20px;
+        }
+        .footer-signature table tr{
+           padding: 0;
+        }
+        .footer-signature table tr td {
+           padding: 0;
+            border: none;
+        }
+        .footer-signature .row-atas tr{
+            margin-top: 0px;
+            vertical-align: bottom;
+        }
+
+        .col-depan, .col-belakang {
+            width: 40%;
+        }
+         .col-tengah {
+            width: 20%;
+         }
     </style>
 </head>
 <body>
-    {{-- {{ var_dump($row1)}} --}}
-    {{ var_dump($nim)}}
     <div class="container">
         <div class="header">
             <h2>TRANSKRIP NILAI</h2>
@@ -124,21 +236,21 @@ function getInisialProdi($nama_prodi) {
             <p><span>Nomor Induk Mahasiswa</span> : {{ substr($mahasiswa->nim, 0, 5) }}.{{ substr($mahasiswa->nim, 5, 2) }}.{{ substr($mahasiswa->nim, 7, 3) }}</p>
             <p><span>Program Studi</span> : <b>{{ $prodi->nama_prodi }} ({{ getInisialProdi($prodi->nama_prodi) }})</b></p>
         </div>
-        <table class="no-border">
-            <tr valign="top">
+        <table class="no-border equal-width">
+            <tr valign="top" class="row-rekap">
                 <td class="no-border">
                     <table>
-                        <thead>
+                        <thead  class="row1-th" >
                             <tr>
-                                <th>No.</th>
+                                <th class="narrow-column">No.</th>
                                 <th>Mata Kuliah</th>
-                                <th>N</th>
-                                <th>H</th>
-                                <th>K</th>
-                                <th>N x K</th>
+                                <th class="narrow-column">N</th>
+                                <th class="narrow-column">H</th>
+                                <th class="narrow-column">K</th>
+                                <th class="narrow-column-nxk">N x K</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody  class="row1">
                             @php
                                 $currentKategori = '';
                                 $index = 1;
@@ -146,12 +258,16 @@ function getInisialProdi($nama_prodi) {
                             @foreach ($row1 as $studi)
                                 @if ($currentKategori != $studi['kategori'])
                                     @php $currentKategori = $studi['kategori'];  $index = 1; @endphp
-                                                                       <tr>
+                                    <tr class="category-row no-row-border">
                                         <td></td>
-                                        <td colspan="5" class="mata-kuliah"><b>{{ $currentKategori }}</b></td>
+                                        <td class="mata-kuliah"><b>{{ $currentKategori }}</b></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 @endif
-                                <tr>
+                                <tr class="no-row-border">
                                     <td>{{ $index }}</td>
                                     <td class="mata-kuliah">{{ $studi['mata_kuliah'] }}</td>
                                     <td>{{ $studi['n'] }}</td>
@@ -161,35 +277,47 @@ function getInisialProdi($nama_prodi) {
                                 </tr>
                                 @php $index++; @endphp
                             @endforeach
+                            <tr class="no-row-border row1-additional">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </td>
                 <td class="no-border">
                     <table>
-                        <thead>
+                        <thead   class="row1-th" >
                             <tr>
-                                <th>No.</th>
+                                <th class="no-column">No.</th>
                                 <th>Mata Kuliah</th>
-                                <th>N</th>
-                                <th>H</th>
-                                <th>K</th>
-                                <th>N x K</th>
+                                <th class="narrow-column">N</th>
+                                <th class="narrow-column">H</th>
+                                <th class="narrow-column">K</th>
+                                <th class="narrow-column-nxk">N x K</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="row2">
                             @php
                                 $currentKategori = '';
                                 $index = 1 + count($row1);
                             @endphp
                             @foreach ($row2 as $studi)
                                 @if ($currentKategori != $studi['kategori'])
-                                    @php $currentKategori = $studi['kategori']; @endphp
-                                    <tr>
+                                    @php $currentKategori = $studi['kategori']; $index = 1; @endphp
+                                    <tr class="category-row no-row-border">
                                         <td></td>
-                                        <td colspan="5" class="mata-kuliah"><b>{{ $currentKategori }}</b></td>
+                                        <td class="mata-kuliah"><b>{{ $currentKategori }}</b></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 @endif
-                                <tr>
+                                <tr class="no-row-border">
                                     <td>{{ $index }}</td>
                                     <td class="mata-kuliah">{{ $studi['mata_kuliah'] }}</td>
                                     <td>{{ $studi['n'] }}</td>
@@ -199,10 +327,21 @@ function getInisialProdi($nama_prodi) {
                                 </tr>
                                 @php $index++; @endphp
                             @endforeach
+                            <tr class="no-row-border row2-additional">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </tbody>
-                        <tfoot>
+                        <tfoot class="tfooter">
                             <tr>
-                                <td colspan="4" class="no-border"></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                                 <td>{{ $totalSks }}</td>
                                 <td>{{ $totalNilai }}</td>
                             </tr>
@@ -213,70 +352,78 @@ function getInisialProdi($nama_prodi) {
             <tr valign="top">
                 <td class="no-border">
                     <table class="second-row-table">
-                        <tbody>
-                            <div class="content">
-                                <p><span>Jumlah Kredit Kumulatif</span> : {{ $totalSks }}</p>
-                                <p><span>Indeks Prestasi Kumulatif (IPK)</span> : {{ $ipk }}</p>
-                                <p><span>Predikat Kelulusan</span> : <b>{{ substr($mahasiswa->nim, 0, 5) }}.{{ substr($mahasiswa->nim, 5, 2) }}.{{ substr($mahasiswa->nim, 7, 3) }}</b></p>
-                                <p><span>Tanggal Yudisium</span> :  {{ formatTanggalLahir($mahasiswa->tanggal_lahir) }}</p>
-                            </div>
-                            <p><span>Keterangan: N-Nilai (A=4, B=3, C=2, D=1, E=0)</p>
+                        <tbody class="mhs_stat">
+                            <tr>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>Jumlah Kredit Kumulatif</td>
+                                            <td>: {{ $totalSks }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Indeks Prestasi Kumulatif (IPK)</td>
+                                            <td>: {{ $ipk }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Predikat Kelulusan</td>
+                                            <td>: <b>{{ getLabelPredikat($ipk)}}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tanggal Yudisium</td>
+                                            <td>:  {{ formatTanggalLahir($mahasiswa->tanggal_lahir) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Keterangan: N-Nilai (A=4, B=3, C=2, D=1, E=0)</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </td>
                 <td class="no-border">
                     <table class="second-row-table">
-                        <tbody>
-                            <p><span><b>Karya Tulis</b></span> :</p>
-                            <p><span><b> {{ $karya_tulis->judul }}</b></p>
+                        <tbody class="karya_tulis_stat compact">
+                            <tr>
+                                <td>
+                                    <p><span><b>Karya Tulis :</b></span></p>
+                                    <p class="judul"><span><b> {{ $karya_tulis->judul }}</b></p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr valign="top" class="footer-signature">
+                <td colspan="2" class="no-border">
+                    <table class="no-border">
+                        <tbody > 
+                            <tr class="row-atas">
+                                <td class="col-depan"><p>Ketua Program Studi</p></td>
+                                <td class="col-tengah"></td>
+                                <td  class="col-belakang"><p>Muara Teweh, {{ formatTanggalLahir(date('Y-m-d')) }}</p>
+                                    <p>Direktur</p>
+                                </td>
+                            </tr>
+                            <tr class="row-tengah">
+                                <td></td>
+                                <td style="text-align: center">foto 3x4</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-bawah">
+                                <td class="no-border"><p><b><u>{{ $kaprodi->nama }}</u></b></p>
+                                    <p>NIDN: {{ $kaprodi->nidn }}</p>
+                                </td>
+                                <td class="no-border"></td>
+                                <td class="no-border"><p><b><u>{{ $direktur->nama }}<u></b></p>
+                                    <p>NIDN: {{ $direktur->nidn }}</p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </td>
             </tr>
         </table>
-        <div class="footer-signature">
-            <table class="no-border">
-                <tbody>
-                    <tr>
-                        <td><p>Ketua Program Studi</p></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><p>Muara Teweh, {{ formatTanggalLahir(date('Y-m-d')) }}</p>
-                            <p>Direktur</p>
-                        </td>
-                    </tr>
-                    <tr></tr>
-                    <tr></tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td style="text-align: center">foto 3x4</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr></tr>
-                    <tr></tr>
-                    <tr>
-                        <td><p><b><u>{{ $kaprodi->nama }}</u></b></p>
-                            <p>NIDN: {{ $kaprodi->nidn }}</p>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><p><b><u>{{ $direktur->nama }}<u></b></p>
-                            <p>NIDN: {{ $direktur->nidn }}</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
 </body>
 </html>

@@ -50,7 +50,7 @@
     <div class="container">
         <div class="header">
             <h2>Graduation Summary</h2>
-            <p>TA: 2023</p>
+            <p>{{$mahasiswa->tahun_lulus != ''? 'TA.' +  $mahasiswa->tahun_lulus : 'Belum Lulus'}}</p>
         </div>
         <div class="content">
             <table>
@@ -68,30 +68,62 @@
                 <tbody>
                     <tr>
                         <td>1</td>
-                        <td>31401.20.004</td>
-                        <td>Khoriul Amin</td>
-                        <td>Teknik Pertambangan (TP)</td>
-                        <td>3.92</td>
-                        <td>5</td>
-                        <td>2023</td>
+                        <td>{{ $nim }}</td>
+                        <td>{{ $mahasiswa->nama_lengkap }}</td>
+                        <td>{{ $prodi->nama_prodi}}</td>
+                        <td> {{$ipk }}</td>
+                        <td> {{ $jumlah_karya_tulis}}</td>
+                        <td> {{$mahasiswa->tahun_lulus != ''? $mahasiswa->tahun_lulus : 'Belum Lulus'}}</td>
                     </tr>
                     <!-- Add more rows as needed -->
                 </tbody>
             </table>
         </div>
         <div class="footer-signature">
-            <div>
-                <p>Mengetahui,</p>
-                <p>Wakil I Bidang Akademik</p>
-                <br><br>
-                <p>_______________________</p>
-            </div>
-            <div>
-                <p>Muara Teweh, ................</p>
-                <p>Ka Prodi</p>
-                <br><br>
-                <p>_______________________</p>
-            </div>
+            <table class="no-border">
+                <tbody>
+                    <tr>
+                        <td><p>Mengetahui</p>
+                           <p>Direktur</p></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><p>Muara Teweh, {{ formatTanggalLahir(date('Y-m-d')) }}</p>
+                            <p>Ketua Program Studi</p>
+                        </td>
+                    </tr>
+                    <tr></tr>
+                    <tr></tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr></tr>
+                    <tr></tr>
+                    <tr>
+                       
+                        <td><p><b><u>{{ $direktur->nama }}<u></b></p>
+                            <p>NIDN: {{ $direktur->nidn }}</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><p><b><u>{{ $kaprodi->nama }}</u></b></p>
+                            <p>NIDN: {{ $kaprodi->nidn }}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </body>
