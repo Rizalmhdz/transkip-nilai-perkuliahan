@@ -10,9 +10,10 @@ class ProdiController extends Controller
 {
     public function index(Request $request)
     {
-        $sort = $request->input('sort', 'nama_prodi');
+        $sort = $request->input('sort', 'created_at');
         $direction = $request->input('direction', 'asc');
         $searchKeyword = $request->input('searchKeyword');
+        $page = $request->input('page', 1);
 
         $query = Prodi::query();
 
@@ -21,50 +22,73 @@ class ProdiController extends Controller
                   ->orWhere('ketua_prodi', 'LIKE', "%{$searchKeyword}%");
         }
 
-        $prodis = $query->orderBy($sort, $direction)->paginate(20);
+        $prodis = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
         $total = $prodis->total();
         $dosens = Dosen::all();
         $ketua_prodi = [];
-        foreach($prodis as $prodi){
+        foreach ($prodis as $prodi) {
             $ketua_prodi[$prodi->ketua_prodi] = Dosen::where('nidn', $prodi->ketua_prodi)->first();
         }
-       
 
-        return view('prodi_page', compact('prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'ketua_prodi'));
-    }
+        if ($prodis->isEmpty() && $page > 1) {
+            $page--;
+            $prodis = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+        }
 
-    public function create()
-    {
-        $dosens = Dosen::all();
-        return view('prodi_page', compact('dosens'));
+        return view('prodi_page', compact('prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'ketua_prodi', 'page'));
     }
 
     public function store(Request $request)
     {
-        Prodi::create($request->all());
+        $request->validate([
+            'nama_prodi' => 'required|string|max:255',
+            'ketua_prodi' => 'required|string|max:10|exists:dosens,nidn',
+        ]);
 
-        return redirect()->route('prodi.index')->with('success', 'Data berhasil ditambahkan');
-    }
-
-    public function edit(Prodi $prodi)
-    {
-        $dosens = Dosen::all();
-        return view('prodi_page', compact('prodi', 'dosens'));
+        try {
+            Prodi::create($request->all());
+            $page = ceil(Prodi::count() / 20);
+            return redirect()->route('prodi.index', ['page' => $page, 'sort' => 'created_at', 'direction' => 'asc'])->with('success', 'Data berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->route('prodi.index')->with('error', 'Gagal menambahkan data: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $prodi = Prodi::findOrFail($id);
-        $prodi->update($request->all());
+        $request->validate([
+            'nama_prodi' => 'required|string|max:255',
+            'ketua_prodi' => 'required|string|max:10|exists:dosens,nidn',
+        ]);
 
-        return redirect()->route('prodi.index')->with('success', 'Data berhasil diubah');
+        $prodi = Prodi::findOrFail($id);
+        $data = $request->all();
+
+        try {
+            $prodi->update($data);
+            $page = ceil(Prodi::where('id', '<=', $id)->count() / 20);
+            return redirect()->route('prodi.index', ['page' => $page, 'sort' => 'created_at', 'direction' => 'asc'])->with('success', 'Data berhasil diubah');
+        } catch (\Exception $e) {
+            return redirect()->route('prodi.index')->with('error', 'Gagal mengubah data: ' . $e->getMessage());
+        }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $prodi = Prodi::findOrFail($id);
-        $prodi->delete();
+        $currentPage = $request->input('page', 1);
 
-        return redirect()->route('prodi.index')->with('success', 'Data berhasil dihapus');
+        try {
+            $prodi->delete();
+            $totalPages = ceil(Prodi::count() / 20);
+
+            if ($currentPage > $totalPages) {
+                $currentPage = $totalPages > 0 ? $totalPages : 1;
+            }
+
+            return redirect()->route('prodi.index', ['page' => $currentPage, 'sort' => 'created_at', 'direction' => 'asc'])->with('success', 'Data berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->route('prodi.index', ['page' => $currentPage, 'sort' => 'created_at', 'direction' => 'asc'])->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }

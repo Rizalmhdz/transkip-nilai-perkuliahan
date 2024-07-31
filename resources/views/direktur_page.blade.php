@@ -89,6 +89,52 @@
     <div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
             <div class="container">
+                <!-- Success Modal -->
+                <button id="successBtn" type="button" class="d-none" data-toggle="modal" data-target="#successModal">Sukses</button>
+                <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="successModalLabel">Sukses</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                    onclick="$('#successModal').hide(); $('.modal-backdrop.fade.show').hide();">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {{ session('success') }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                    onclick="$('#successModal').hide(); $('.modal-backdrop.fade.show').hide();">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Modal -->
+                <button id="errorBtn" type="button" class="d-none" data-toggle="modal" data-target="#errorModal">Gagal</button>
+                <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="errorModalLabel">Gagal</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                    onclick="$('#errorModal').hide(); $('.modal-backdrop.fade.show').hide();">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {{ session('error') }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                    onclick="$('#errorModal').hide(); $('.modal-backdrop.fade.show').hide();">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row mb-3 d-flex justify-content-between">
                     <div class="col-12 col-md-9 mb-2 mb-md-0">
                         <button class="btn btn-primary me-2" data-toggle="modal" data-target="#createModal">
@@ -199,6 +245,7 @@
                                                                 method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
+                                                                <input type="hidden" name="page" value="{{ $direkturs->currentPage() }}">
                                                                 <button type="submit" class="btn btn-danger">Hapus</button>
                                                             </form>
                                                         </div>
@@ -212,7 +259,7 @@
                             </table>
                         </div>
                         <div class="col-12 mb-2">
-                            {{ $direkturs->links() }}
+                            {{ $direkturs->appends(request()->input())->links() }}
                         </div>
                     </div>
                 </div>
@@ -261,7 +308,7 @@
                         $('#createForm')[0].reset();
                     });
 
-                    $('.edit-modal').on('hidden.bs.modal', function () {
+                    $('[id^=editModal]').on('hidden.bs.modal', function () {
                         $(this).find('form')[0].reset();
                     });
 
@@ -275,8 +322,17 @@
                             $(this).toggle($(this).text().toLowerCase().indexOf(keyword) > -1)
                         });
                     });
+
+                    @if(session('success'))
+                        $('#successBtn').trigger('click');
+                    @endif
+
+                    @if(session('error'))
+                        $('#errorBtn').trigger('click');
+                    @endif
                 });
                 </script>
+
             </div>
         </div>
     </div>

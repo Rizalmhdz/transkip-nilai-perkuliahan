@@ -13,15 +13,17 @@ class HasilStudiSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create('id_ID');
-        $mataKuliahs = MataKuliah::all();
         $mahasiswas = Mahasiswa::all();
 
         foreach ($mahasiswas as $mahasiswa) {
-            foreach ($mataKuliahs->random(5) as $mataKuliah) {
+            // Ambil semua mata kuliah untuk prodi mahasiswa
+            $mataKuliahs = MataKuliah::where('prodi', $mahasiswa->prodi)->get();
+
+            foreach ($mataKuliahs as $mataKuliah) {
                 HasilStudi::create([
                     'id_mata_kuliah' => $mataKuliah->id,
                     'nim' => $mahasiswa->nim,
-                    'nilai' => $faker->numberBetween(0, 4),
+                    'nilai' => $faker->numberBetween(1, 4), // Nilai antara 1 sampai 4
                 ]);
             }
         }

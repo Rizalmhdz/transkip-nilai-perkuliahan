@@ -8,7 +8,6 @@ use App\Models\HasilStudi;
 use App\Models\MataKuliah;
 use App\Models\Mahasiswa;
 use App\Models\Prodi;
-use App\Models\Dosen;
 use Illuminate\Support\Facades\Auth;
 
 class HasilStudiController extends Controller
@@ -18,7 +17,7 @@ class HasilStudiController extends Controller
         $user = Auth::user();
 
         $isPrint = $request->input('isPrint', false);
-        $sort = $request->input('sort', 'nilai');
+        $sort = $request->input('sort', 'id'); // Default sort column set to 'id'
         $direction = $request->input('direction', 'asc');
         $searchKeyword = $request->input('searchKeyword');
         $prodi_id = $request->input('prodi');
@@ -26,39 +25,44 @@ class HasilStudiController extends Controller
         $nim = $request->input('nim');
         $nilai = $request->input('nilai');
         $filter_type = $request->input('filter_type');
+        $page = $request->input('page', 1);
         $user_dosen_id = null;
 
         $query = HasilStudi::query();
 
-        
-            if ($searchKeyword) {
-                $query->whereHas('mahasiswa', function($query) use ($searchKeyword) {
-                    $query->where('nama_lengkap', 'LIKE', "%{$searchKeyword}%");
-                })->orWhereHas('mataKuliah', function($query) use ($searchKeyword) {
-                    $query->where('nama_mata_kuliah', 'LIKE', "%{$searchKeyword}%");
-                })->orWhere('nim', 'LIKE', "%{$searchKeyword}%");
-            }
+        if ($searchKeyword) {
+            $query->whereHas('mahasiswa', function($query) use ($searchKeyword) {
+                $query->where('nama_lengkap', 'LIKE', "%{$searchKeyword}%");
+            })->orWhereHas('mataKuliah', function($query) use ($searchKeyword) {
+                $query->where('nama_mata_kuliah', 'LIKE', "%{$searchKeyword}%");
+            })->orWhere('nim', 'LIKE', "%{$searchKeyword}%");
+        }
 
-            if ($prodi_id) {
-                $query->whereHas('mataKuliah', function($query) use ($prodi_id) {
-                    $query->where('prodi', $prodi_id);
-                });
-            }
+        if ($prodi_id) {
+            $query->whereHas('mataKuliah', function($query) use ($prodi_id) {
+                $query->where('prodi', $prodi_id);
+            });
+        }
 
-            if ($mata_kuliah_id) {
-                $query->where('id_mata_kuliah', $mata_kuliah_id);
-            }
+        if ($mata_kuliah_id) {
+            $query->where('id_mata_kuliah', $mata_kuliah_id);
+        }
 
-            if ($nim) {
-                $query->where('nim', $nim);
-            }
+        if ($nim) {
+            $query->where('nim', $nim);
+        }
 
-            if ($nilai) {
-                $query->where('nilai', $nilai);
-            }
-       
+        if ($nilai) {
+            $query->where('nilai', $nilai);
+        }
 
-        $hasil_studis = $query->orderBy($sort, $direction)->paginate(20);
+        $hasil_studis = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+
+        if ($hasil_studis->isEmpty() && $page > 1) {
+            $page--;
+            $hasil_studis = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+        }
+
         $total = $hasil_studis->total();
         $mata_kuliahs = MataKuliah::all();
         $mahasiswas = Mahasiswa::whereIn('nim', function($query) {
@@ -80,7 +84,7 @@ class HasilStudiController extends Controller
         $ipk = $totalSks ? round($totalNilai / $totalSks, 2) : 0;
         $prodis = Prodi::all();
 
-        return view('hasil_studi_page', compact('hasil_studis', 'total', 'sort', 'direction', 'searchKeyword', 'mata_kuliahs', 'mahasiswas', 'prodis', 'prodi_id', 'mata_kuliah_id', 'nim', 'nilai', 'filter_type', 'user', 'user_dosen_id', 'isPrint', 'totalSks', 'ipk', 'nim'));
+        return view('hasil_studi_page', compact('hasil_studis', 'total', 'sort', 'direction', 'searchKeyword', 'mata_kuliahs', 'mahasiswas', 'prodis', 'prodi_id', 'mata_kuliah_id', 'nim', 'nilai', 'filter_type', 'user', 'user_dosen_id', 'isPrint', 'totalSks', 'ipk', 'nim', 'page'));
     }
 
     public function create()
@@ -92,9 +96,19 @@ class HasilStudiController extends Controller
 
     public function store(Request $request)
     {
-        HasilStudi::create($request->all());
+        $request->validate([
+            'nim' => 'required|string|max:10',
+            'id_mata_kuliah' => 'required|integer',
+            'nilai' => 'required|integer|between:0,4',
+        ]);
 
-        return redirect()->route('hasil-studi.index')->with('success', 'Data berhasil ditambahkan');
+        try {
+            HasilStudi::create($request->all());
+            $page = ceil(HasilStudi::count() / 20);
+            return redirect()->route('hasil-studi.index', ['page' => $page])->with('success', 'Data berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->route('hasil-studi.index')->with('error', 'Gagal menambahkan data: ' . $e->getMessage());
+        }
     }
 
     public function edit(HasilStudi $hasilStudi)
@@ -103,23 +117,43 @@ class HasilStudiController extends Controller
         $mahasiswas = Mahasiswa::all();
         $user = Auth::user();
 
-        return view('hasil_studi_page', compact('hasilStudi', 'mata_kuliahs', 'mahasiswas', ));
+        return view('hasil_studi_page', compact('hasilStudi', 'mata_kuliahs', 'mahasiswas'));
     }
 
     public function update(Request $request, $id)
     {
-        $hasilStudi = HasilStudi::findOrFail($id);
-        $hasilStudi->update($request->all());
+        $request->validate([
+            'nim' => 'required|string|max:10',
+            'id_mata_kuliah' => 'required|integer',
+            'nilai' => 'required|integer|between:0,4',
+        ]);
 
-        return redirect()->route('hasil-studi.index')->with('success', 'Data berhasil diubah');
+        try {
+            $hasilStudi = HasilStudi::findOrFail($id);
+            $hasilStudi->update($request->all());
+            return redirect()->route('hasil-studi.index', ['page' => $request->input('page', 1)])->with('success', 'Data berhasil diubah');
+        } catch (\Exception $e) {
+            return redirect()->route('hasil-studi.index', ['page' => $request->input('page', 1)])->with('error', 'Gagal mengubah data: ' . $e->getMessage());
+        }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $hasilStudi = HasilStudi::findOrFail($id);
-        $hasilStudi->delete();
+        $page = $request->input('page', 1);
 
-        return redirect()->route('hasil-studi.index')->with('success', 'Data berhasil dihapus');
+        try {
+            $hasilStudi->delete();
+            $totalPages = ceil(HasilStudi::count() / 20);
+
+            if ($page > $totalPages) {
+                $page = $totalPages > 0 ? $totalPages : 1;
+            }
+
+            return redirect()->route('hasil-studi.index', ['page' => $page])->with('success', 'Data berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->route('hasil-studi.index', ['page' => $page])->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 
     public function cetakTranskrip($nim)

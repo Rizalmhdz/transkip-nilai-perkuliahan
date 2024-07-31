@@ -13,6 +13,7 @@ class DirekturController extends Controller
         $sort = $request->input('sort', 'nidn');
         $direction = $request->input('direction', 'asc');
         $searchKeyword = $request->input('searchKeyword');
+        $page = $request->input('page', 1);
 
         $query = Direktur::query();
 
@@ -23,11 +24,17 @@ class DirekturController extends Controller
                   });
         }
 
-        $direkturs = $query->orderBy($sort, $direction)->paginate(20);
+        $direkturs = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+
+        if ($direkturs->isEmpty() && $page > 1) {
+            $page--;
+            $direkturs = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+        }
+
         $total = $direkturs->total();
         $dosens = Dosen::all();
 
-        return view('direktur_page', compact('direkturs', 'total', 'sort', 'direction', 'searchKeyword', 'dosens'));
+        return view('direktur_page', compact('direkturs', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'page'));
     }
 
     public function create()
@@ -38,9 +45,17 @@ class DirekturController extends Controller
 
     public function store(Request $request)
     {
-        Direktur::create($request->all());
+        $validatedData = $request->validate([
+            'nidn' => 'required|string|max:10',
+        ]);
 
-        return redirect()->route('direktur.index')->with('success', 'Data berhasil ditambahkan');
+        try {
+            Direktur::create($validatedData);
+            $page = ceil(Direktur::count() / 20);
+            return redirect()->route('direktur.index', ['page' => $page])->with('success', 'Data berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->route('direktur.index')->with('error', 'Gagal menambahkan data: ' . $e->getMessage());
+        }
     }
 
     public function edit(Direktur $direktur)
@@ -52,16 +67,36 @@ class DirekturController extends Controller
     public function update(Request $request, $id)
     {
         $direktur = Direktur::findOrFail($id);
-        $direktur->update($request->all());
 
-        return redirect()->route('direktur.index')->with('success', 'Data berhasil diubah');
+        $validatedData = $request->validate([
+            'nidn' => 'required|string|max:10',
+        ]);
+
+        try {
+            $direktur->update($validatedData);
+            $page = ceil(Direktur::where('id', '<=', $id)->count() / 20);
+            return redirect()->route('direktur.index', ['page' => $page])->with('success', 'Data berhasil diubah');
+        } catch (\Exception $e) {
+            return redirect()->route('direktur.index')->with('error', 'Gagal mengubah data: ' . $e->getMessage());
+        }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $direktur = Direktur::findOrFail($id);
-        $direktur->delete();
+        $page = $request->input('page', 1);
 
-        return redirect()->route('direktur.index')->with('success', 'Data berhasil dihapus');
+        try {
+            $direktur->delete();
+            $totalPages = ceil(Direktur::count() / 20);
+
+            if ($page > $totalPages) {
+                $page = $totalPages > 0 ? $totalPages : 1;
+            }
+
+            return redirect()->route('direktur.index', ['page' => $page])->with('success', 'Data berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->route('direktur.index')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }

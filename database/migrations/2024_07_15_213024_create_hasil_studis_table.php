@@ -16,9 +16,15 @@ class CreateHasilStudisTable extends Migration
         Schema::create('hasil_studis', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_mata_kuliah');
-            $table->foreign('id_mata_kuliah')->references('id')->on('mata_kuliahs');
+            $table->foreign('id_mata_kuliah')
+                ->references('id')->on('mata_kuliahs')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('nim');
-            $table->foreign('nim')->references('nim')->on('mahasiswas');
+            $table->foreign('nim')
+                ->references('nim')->on('mahasiswas')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->unsignedInteger('nilai'); // Nilai antara 0 dan 4
             $table->timestamps();
         });

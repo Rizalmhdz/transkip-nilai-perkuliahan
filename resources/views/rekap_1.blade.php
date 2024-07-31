@@ -429,7 +429,7 @@ $row2additional = $maxHeight - $row2Height;
                             </tr>
                         </tbody>
                     </table>
-                </td>
+                </td>p
             </tr>
         </table>
     </div>

@@ -17,9 +17,15 @@ class CreateKaryaTulissTable extends Migration
             $table->id();
             $table->string('judul')->unique();
             $table->string('nim');
-            $table->foreign('nim')->references('nim')->on('mahasiswas');
+            $table->foreign('nim')
+                ->references('nim')->on('mahasiswas')
+                // // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('pembimbing');
-            $table->foreign('pembimbing')->references('nidn')->on('dosens');
+            $table->foreign('pembimbing')
+                ->references('nidn')->on('dosens')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

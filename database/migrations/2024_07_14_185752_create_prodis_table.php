@@ -17,7 +17,10 @@ class CreateProdisTable extends Migration
             $table->id();
             $table->string('nama_prodi')->unique();
             $table->string('ketua_prodi', 10);
-            $table->foreign('ketua_prodi')->references('nidn')->on('dosens')->onDelete('cascade');
+            $table->foreign('ketua_prodi')
+                ->references('nidn')->on('dosens')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

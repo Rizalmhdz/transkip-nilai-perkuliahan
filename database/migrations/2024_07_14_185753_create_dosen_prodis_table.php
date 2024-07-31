@@ -16,9 +16,15 @@ class CreateDosenProdisTable extends Migration
         Schema::create('dosen_prodis', function (Blueprint $table) {
             $table->id();
             $table->string('nidn');
-            $table->foreign('nidn')->references('nidn')->on('dosens');
+            $table->foreign('nidn')
+                ->references('nidn')->on('dosens')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->unsignedBigInteger('prodi');
-            $table->foreign('prodi')->references('id')->on('prodis');
+            $table->foreign('prodi')
+                ->references('id')->on('prodis')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

@@ -21,9 +21,15 @@ class CreateMahasiswasTable extends Migration
             $table->date('tanggal_lahir');
             $table->integer('angkatan');
             $table->unsignedBigInteger('prodi');
-            $table->foreign('prodi')->references('id')->on('prodis');
+            $table->foreign('prodi')
+                ->references('id')->on('prodis')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('dosen_akademik');
-            $table->foreign('dosen_akademik')->references('nidn')->on('dosens');
+            $table->foreign('dosen_akademik')
+                ->references('nidn')->on('dosens')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->year('tahun_lulus')->nullable();
             $table->date('tanggal_yudisium')->nullable();
             $table->timestamps();

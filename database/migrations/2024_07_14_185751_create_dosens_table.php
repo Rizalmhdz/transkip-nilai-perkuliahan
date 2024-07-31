@@ -18,9 +18,9 @@ class CreateDosensTable extends Migration
             $table->string('nama');
             $table->string('nidn', 10)->unique();
             $table->string('email_dosen');
-            // $table->foreign('email_dosen')->references('email')->on('users');
             $table->timestamps();
         });
+
     }
 
     /**

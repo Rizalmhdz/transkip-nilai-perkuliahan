@@ -106,6 +106,56 @@
     <div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
             <div class="container">
+                <!-- Success Modal -->
+                <button id="successBtn" type="button" class="d-none" data-toggle="modal" data-target="#successModal">Sukses</button>
+                <div class="modal fade" id="successModal" tabindex="-1" role="dialog"
+                    aria-labelledby="successModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="successModalLabel">Sukses</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                    onclick="$('#successModal').hide();
+                                   $('.modal-backdrop.fade.show').hide();">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {{ session('success') }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#successModal').hide();
+                                   $('.modal-backdrop.fade.show').hide();">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Failed Modal -->
+                <button id="failedBtn" type="button" class="d-none" data-toggle="modal" data-target="#failedModal">Gagal</button>
+                <div class="modal fade" id="failedModal" tabindex="-1" role="dialog"
+                    aria-labelledby="failedModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="failedModalLabel">Gagal</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                    onclick="$('#failedModal').hide();
+                                   $('.modal-backdrop.fade.show').hide();">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {{ session('error') }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#failedModal').hide();
+                                   $('.modal-backdrop.fade.show').hide();">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row mb-3 d-flex justify-content-between">
                     <div class="col-12 col-md-9 mb-2 mb-md-0">
                         <button class="btn btn-primary me-2" data-toggle="modal" data-target="#createModal">
@@ -185,7 +235,7 @@
                                                                     <input type="text"
                                                                         class="form-control rounded"
                                                                         id="edit_nama{{ $dosen->id }}"
-                                                                        name="nama" required>
+                                                                        name="nama" value="{{ $dosen->nama }}" required>
                                                                 </div>
                                                                 <div class="form-group mb-3">
                                                                     <label for="edit_nidn{{ $dosen->id }}"
@@ -193,7 +243,7 @@
                                                                     <input type="text"
                                                                         class="form-control rounded"
                                                                         id="edit_nidn{{ $dosen->id }}"
-                                                                        name="nidn" required>
+                                                                        name="nidn" value="{{ $dosen->nidn }}" required>
                                                                     <div class="invalid-feedback"
                                                                         id="edit_nidn_feedback{{ $dosen->id }}">
                                                                         NIDN harus berupa angka dan harus 10 karakter.
@@ -202,20 +252,10 @@
                                                                 <div class="form-group mb-3">
                                                                     <label for="edit_email_dosen{{ $dosen->id }}"
                                                                         class="font-weight-bold">Email</label>
-                                                                    <select class="form-control rounded"
+                                                                    <input type="email"
+                                                                        class="form-control rounded"
                                                                         id="edit_email_dosen{{ $dosen->id }}"
-                                                                        name="email_dosen" required>
-                                                                        <option value="{{ $dosen->email_dosen }}">
-                                                                            {{ $dosen->email_dosen }}
-                                                                        </option>
-                                                                        @foreach($availableEmails as $email)
-                                                                        <option value="{{ $email }}">{{ $email }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                    <button type="button" class="btn btn-link"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#addEmailModal">Tambahkan Email
-                                                                        Baru</button>
+                                                                        name="email_dosen" value="{{ $dosen->email_dosen }}" required>
                                                                 </div>
                                                         </div>
                                                         <div class="modal-footer">
@@ -301,13 +341,7 @@
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="email_dosen" class="font-weight-bold">Email</label>
-                                        <select class="form-control rounded" id="email_dosen" name="email_dosen" required>
-                                            @foreach($availableEmails as $email)
-                                            <option value="{{ $email }}">{{ $email }}</option>
-                                            @endforeach
-                                        </select>
-                                        <button type="button" class="btn btn-link" data-bs-toggle="modal"
-                                            data-bs-target="#addEmailModal">Tambahkan Email Baru</button>
+                                        <input type="email" class="form-control rounded" id="email_dosen" name="email_dosen" required>
                                     </div>
                             </div>
                             <div class="modal-footer">
@@ -315,37 +349,6 @@
                                 <button type="submit" class="btn btn-primary" id="create_submit">Tambahkan</button>
                             </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Add Email Modal -->
-                <div class="modal fade" id="addEmailModal" tabindex="-1" aria-labelledby="addEmailModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addEmailModalLabel">Tambahkan Email Baru</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="addEmailForm" action="{{ route('user.store') }}" method="POST">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label for="new_email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="new_email" name="email" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="new_name" class="form-label">Nama</label>
-                                        <input type="text" class="form-control" id="new_name" name="name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="new_password" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="new_password" name="password" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Tambahkan</button>
-                                </form>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -414,6 +417,14 @@
                             $('#edit_submit' + id).prop('disabled', true);
                         }
                     });
+
+                    @if(session('success'))
+                        $('#successBtn').trigger('click');
+                    @endif
+
+                    @if(session('error'))
+                        $('#failedBtn').trigger('click');
+                    @endif
                 });
                 </script>
 

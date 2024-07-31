@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use App\Models\MataKuliah;
 use App\Models\Dosen;
 use App\Models\Prodi;
@@ -12,54 +11,59 @@ use Illuminate\Support\Facades\Auth;
 
 class MataKuliahController extends Controller
 {
-
     public function index(Request $request)
     {
         $prodi_id = $request->input('prodi');
         $dosen_id = $request->input('dosen');
         $kode_kategori = $request->input('kategori');
-        $sort = $request->input('sort', 'nama_mata_kuliah'); // Default sort column
+        $sort = $request->input('sort', 'id'); // Default sort column set to 'id'
         $direction = $request->input('direction', 'asc'); // Default sort direction
         $searchKeyword = $request->input('searchKeyword');
+        $page = $request->input('page', 1);
 
         $prodis = Prodi::all();
         $dosens = Dosen::all();
         $kategori_matkuls = KategoriMatkul::all();
 
         $user = Auth::user();
-            $query = MataKuliah::query();
+        $query = MataKuliah::query();
 
-            if ($prodi_id) {
-                $query->where('prodi', $prodi_id);
-            }
+        if ($prodi_id) {
+            $query->where('prodi', $prodi_id);
+        }
 
-            if ($dosen_id) {
-                $query->where('dosen_pengampu', $dosen_id);
-            }
+        if ($dosen_id) {
+            $query->where('dosen_pengampu', $dosen_id);
+        }
 
-            if ($kode_kategori) {
-                $query->where('kategori_matkul', $kode_kategori);
-            }
+        if ($kode_kategori) {
+            $query->where('kategori_matkul', $kode_kategori);
+        }
 
-            if ($searchKeyword) {
-                $query->where(function($q) use ($searchKeyword) {
-                    $q->where('nama_mata_kuliah', 'LIKE', "%{$searchKeyword}%")
-                    ->orWhere('sks', 'LIKE', "%{$searchKeyword}%")
-                    ->orWhere('kategori_matkul', 'LIKE', "%{$searchKeyword}%")
-                    ->orWhereHas('dosen', function($query) use ($searchKeyword) {
-                        $query->where('nama', 'LIKE', "%{$searchKeyword}%");
-                    })
-                    ->orWhereHas('prodi', function($query) use ($searchKeyword) {
-                        $query->where('nama_prodi', 'LIKE', "%{$searchKeyword}%");
-                    });
-                });
-            }
-            $mata_kuliahs = $query->orderBy($sort, $direction)->paginate(20);
-       
+        if ($searchKeyword) {
+            $query->where(function($q) use ($searchKeyword) {
+                $q->where('nama_mata_kuliah', 'LIKE', "%{$searchKeyword}%")
+                  ->orWhere('sks', 'LIKE', "%{$searchKeyword}%")
+                  ->orWhere('kategori_matkul', 'LIKE', "%{$searchKeyword}%")
+                  ->orWhereHas('dosen', function($query) use ($searchKeyword) {
+                      $query->where('nama', 'LIKE', "%{$searchKeyword}%");
+                  })
+                  ->orWhereHas('prodi', function($query) use ($searchKeyword) {
+                      $query->where('nama_prodi', 'LIKE', "%{$searchKeyword}%");
+                  });
+            });
+        }
 
-        $total = $mata_kuliahs->total(); // Total number of records
+        $mata_kuliahs = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
 
-        return view('mata_kuliah_page', compact('mata_kuliahs', 'prodis', 'prodi_id', 'dosens', 'dosen_id', 'kategori_matkuls', 'kode_kategori', 'total', 'sort', 'direction', 'searchKeyword'));
+        if ($mata_kuliahs->isEmpty() && $page > 1) {
+            $page--;
+            $mata_kuliahs = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+        }
+
+        $total = $mata_kuliahs->total();
+
+        return view('mata_kuliah_page', compact('mata_kuliahs', 'prodis', 'prodi_id', 'dosens', 'dosen_id', 'kategori_matkuls', 'kode_kategori', 'total', 'sort', 'direction', 'searchKeyword', 'page'));
     }
 
     public function create()
@@ -67,16 +71,27 @@ class MataKuliahController extends Controller
         $dosens = Dosen::all();
         $prodis = Prodi::all();
         $kategori_matkuls = KategoriMatkul::all();
-
         return view('mata_kuliah_page', compact('dosens', 'prodis', 'kategori_matkuls'));
     }
 
     public function store(Request $request)
     {
-        // Validasi dan simpan data
-        MataKuliah::create($request->all());
+        $request->validate([
+            'nama_mata_kuliah' => 'required|string|max:255',
+            'sks' => 'required|integer',
+            'kategori_matkul' => 'required|string|max:10',
+            'dosen_pengampu' => 'required|string|max:10',
+            'prodi' => 'required|integer',
+        ]);
 
-        return redirect()->route('mata-kuliah.index')->with('success', 'Data berhasil ditambahkan');
+        try {
+            $data = $request->all();
+            MataKuliah::create($data);
+            $page = ceil(MataKuliah::count() / 20);
+            return redirect()->route('mata-kuliah.index', ['page' => $page])->with('success', 'Data berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->route('mata-kuliah.index')->with('error', 'Gagal menambahkan data: ' . $e->getMessage());
+        }
     }
 
     public function edit(MataKuliah $mataKuliah)
@@ -84,25 +99,45 @@ class MataKuliahController extends Controller
         $dosens = Dosen::all();
         $prodis = Prodi::all();
         $kategori_matkuls = KategoriMatkul::all();
-
         return view('mata_kuliah_page', compact('mataKuliah', 'dosens', 'prodis', 'kategori_matkuls'));
     }
 
     public function update(Request $request, $id)
     {
-        // Validasi dan update data
-        $mataKuliah = MataKuliah::findOrFail($id);
-        $mataKuliah->update($request->all());
+        $request->validate([
+            'nama_mata_kuliah' => 'required|string|max:255',
+            'sks' => 'required|integer',
+            'kategori_matkul' => 'required|string|max:10',
+            'dosen_pengampu' => 'required|string|max:10',
+            'prodi' => 'required|integer',
+        ]);
 
-        return redirect()->route('mata-kuliah.index')->with('success', 'Data berhasil diubah');
+        try {
+            $mataKuliah = MataKuliah::findOrFail($id);
+            $data = $request->all();
+            $mataKuliah->update($data);
+            return redirect()->route('mata-kuliah.index', ['page' => $request->input('page', 1)])->with('success', 'Data berhasil diubah');
+        } catch (\Exception $e) {
+            return redirect()->route('mata-kuliah.index', ['page' => $request->input('page', 1)])->with('error', 'Gagal mengubah data: ' . $e->getMessage());
+        }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        // Hapus data
         $mataKuliah = MataKuliah::findOrFail($id);
-        $mataKuliah->delete();
+        $page = $request->input('page', 1);
 
-        return redirect()->route('mata-kuliah.index')->with('success', 'Data berhasil dihapus');
+        try {
+            $mataKuliah->delete();
+            $totalPages = ceil(MataKuliah::count() / 20);
+
+            if ($page > $totalPages) {
+                $page = $totalPages > 0 ? $totalPages : 1;
+            }
+
+            return redirect()->route('mata-kuliah.index', ['page' => $page])->with('success', 'Data berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->route('mata-kuliah.index', ['page' => $page])->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }

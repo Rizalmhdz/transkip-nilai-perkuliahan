@@ -16,7 +16,10 @@ class CreateDirektursTable extends Migration
         Schema::create('direkturs', function (Blueprint $table) {
             $table->id();
             $table->string('nidn');
-            $table->foreign('nidn')->references('nidn')->on('dosens');
+            $table->foreign('nidn')
+                ->references('nidn')->on('dosens')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

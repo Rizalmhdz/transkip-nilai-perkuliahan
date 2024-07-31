@@ -18,11 +18,20 @@ class CreateMataKuliahsTable extends Migration
             $table->string('nama_mata_kuliah');
             $table->unsignedInteger('sks');
             $table->string('kategori_matkul');
-            $table->foreign('kategori_matkul')->references('kode_kategori')->on('kategori_matkuls');
+            $table->foreign('kategori_matkul')
+                ->references('kode_kategori')->on('kategori_matkuls')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('dosen_pengampu');
-            $table->foreign('dosen_pengampu')->references('nidn')->on('dosens');
+            $table->foreign('dosen_pengampu')
+                ->references('nidn')->on('dosens')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->unsignedBigInteger('prodi');
-            $table->foreign('prodi')->references('id')->on('prodis');
+            $table->foreign('prodi')
+                ->references('id')->on('prodis')
+                // ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

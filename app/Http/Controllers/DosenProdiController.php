@@ -6,91 +6,103 @@ use Illuminate\Http\Request;
 use App\Models\DosenProdi;
 use App\Models\Dosen;
 use App\Models\Prodi;
-use App\Models\Mahasiswa;
-use App\Models\MataKuliah;
-use App\Models\KaryaTulis;
 use Illuminate\Support\Facades\Auth;
 
 class DosenProdiController extends Controller
 {
     public function index(Request $request)
     {
-        $user = Auth::user();
         $sort = $request->input('sort', 'nidn');
         $direction = $request->input('direction', 'asc');
         $searchKeyword = $request->input('searchKeyword');
         $prodi_id = $request->input('prodi');
         $dosen_id = $request->input('dosen');
+        $page = $request->input('page', 1);
 
         $query = DosenProdi::query();
 
-            if ($searchKeyword) {
-                $query->where('nidn', 'LIKE', "%{$searchKeyword}%")
-                    ->orWhereHas('dosen', function($query) use ($searchKeyword) {
-                        $query->where('nama', 'LIKE', "%{$searchKeyword}%");
-                    })
-                    ->orWhereHas('prodi', function($query) use ($searchKeyword) {
-                        $query->where('nama_prodi', 'LIKE', "%{$searchKeyword}%");
-                    });
-            }
+        if ($searchKeyword) {
+            $query->where('nidn', 'LIKE', "%{$searchKeyword}%")
+                ->orWhereHas('dosen', function($query) use ($searchKeyword) {
+                    $query->where('nama', 'LIKE', "%{$searchKeyword}%");
+                })
+                ->orWhereHas('prodi', function($query) use ($searchKeyword) {
+                    $query->where('nama_prodi', 'LIKE', "%{$searchKeyword}%");
+                });
+        }
 
-            if ($prodi_id) {
-                $query->where('prodi', $prodi_id);
-            }
+        if ($prodi_id) {
+            $query->where('prodi', $prodi_id);
+        }
 
-            if ($dosen_id) {
-                $query->where('nidn', $dosen_id);
-            }
+        if ($dosen_id) {
+            $query->where('nidn', $dosen_id);
+        }
 
-            $dosen_prodis = $query->orderBy($sort, $direction)->paginate(20);
+        $dosen_prodis = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
 
-        
+        if ($dosen_prodis->isEmpty() && $page > 1) {
+            $page--;
+            $dosen_prodis = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+        }
 
-        $mahasiswaBimbinganAkademik = Mahasiswa::all()->count();
-                $mataKuliahDiampu = MataKuliah::all()->count();
-                $mahasiswaBimbinganKaryaTulis = KaryaTulis::all()->count();
-        
         $total = $dosen_prodis->total();
         $dosens = Dosen::all();
         $prodis = Prodi::all();
 
-        return view('dosen_prodi_page', compact('dosen_prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'prodis', 'prodi_id', 'dosen_id', 'mahasiswaBimbinganAkademik', 'mataKuliahDiampu', 'mahasiswaBimbinganKaryaTulis'));
-    }
-
-    public function create()
-    {
-        $dosens = Dosen::all();
-        $prodis = Prodi::all();
-        return view('dosen_prodi_page', compact('dosens', 'prodis'));
+        return view('dosen_prodi_page', compact('dosen_prodis', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'prodis', 'prodi_id', 'dosen_id', 'page'));
     }
 
     public function store(Request $request)
     {
-        DosenProdi::create($request->all());
+        $validatedData = $request->validate([
+            'nidn' => 'required|string|max:10',
+            'prodi' => 'required|integer',
+        ]);
 
-        return redirect()->route('dosen-prodi.index')->with('success', 'Data berhasil ditambahkan');
-    }
-
-    public function edit(DosenProdi $dosenProdi)
-    {
-        $dosens = Dosen::all();
-        $prodis = Prodi::all();
-        return view('dosen_prodi_page', compact('dosenProdi', 'dosens', 'prodis'));
+        try {
+            DosenProdi::create($validatedData);
+            $page = ceil(DosenProdi::count() / 20);
+            return redirect()->route('dosen-prodi.index', ['page' => $page])->with('success', 'Data berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->route('dosen-prodi.index')->with('error', 'Gagal menambahkan data: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, $id)
     {
         $dosenProdi = DosenProdi::findOrFail($id);
-        $dosenProdi->update($request->all());
 
-        return redirect()->route('dosen-prodi.index')->with('success', 'Data berhasil diubah');
+        $validatedData = $request->validate([
+            'nidn' => 'required|string|max:10',
+            'prodi' => 'required|integer',
+        ]);
+
+        try {
+            $dosenProdi->update($validatedData);
+            $page = ceil(DosenProdi::where('id', '<=', $id)->count() / 20);
+            return redirect()->route('dosen-prodi.index', ['page' => $page])->with('success', 'Data berhasil diubah');
+        } catch (\Exception $e) {
+            return redirect()->route('dosen-prodi.index')->with('error', 'Gagal mengubah data: ' . $e->getMessage());
+        }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $dosenProdi = DosenProdi::findOrFail($id);
-        $dosenProdi->delete();
+        $page = $request->input('page', 1);
 
-        return redirect()->route('dosen-prodi.index')->with('success', 'Data berhasil dihapus');
+        try {
+            $dosenProdi->delete();
+            $totalPages = ceil(DosenProdi::count() / 20);
+
+            if ($page > $totalPages) {
+                $page = $totalPages > 0 ? $totalPages : 1;
+            }
+
+            return redirect()->route('dosen-prodi.index', ['page' => $page])->with('success', 'Data berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->route('dosen-prodi.index')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }

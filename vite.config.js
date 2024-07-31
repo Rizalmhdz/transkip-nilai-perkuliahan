@@ -11,4 +11,16 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+
+    server: {
+        host: true,  // Mengizinkan host eksternal
+        port: 5173,
+        hmr: {
+            host: 'localhost',  // Ganti dengan nama domain jika perlu
+            protocol: 'ws',
+            clientPort: 443
+        },
+    },
 });
+
+

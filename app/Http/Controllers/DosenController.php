@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Dosen;
-use App\Models\User;
 
 class DosenController extends Controller
 {
     public function index(Request $request)
     {
-        $sort = $request->input('sort', 'nama');
+        $sort = $request->input('sort', 'created_at');
         $direction = $request->input('direction', 'asc');
         $searchKeyword = $request->input('searchKeyword');
+        $page = $request->input('page', 1);
 
         $query = Dosen::query();
 
@@ -22,45 +22,73 @@ class DosenController extends Controller
                   ->orWhere('email_dosen', 'LIKE', "%{$searchKeyword}%");
         }
 
-        $dosens = $query->orderBy($sort, $direction)->paginate(20);
+        $dosens = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
         $total = $dosens->total();
-        $availableEmails = User::whereDoesntHave('dosen')->pluck('email');
 
-        return view('dosen_page', compact('dosens', 'total', 'sort', 'direction', 'searchKeyword', 'availableEmails'));
+        if ($dosens->isEmpty() && $page > 1) {
+            $page--;
+            $dosens = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+        }
+
+        return view('dosen_page', compact('dosens', 'total', 'sort', 'direction', 'searchKeyword', 'page'));
     }
 
     public function create()
     {
-        $availableEmails = User::whereDoesntHave('dosen')->pluck('email');
-        return view('dosen_page', compact('availableEmails'));
+        return view('dosen_page');
     }
 
     public function store(Request $request)
     {
-        Dosen::create($request->all());
+        $validatedData = $request->validate([
+            'nama' => 'required|string|max:255',
+            'nidn' => 'required|string|max:10|unique:dosens,nidn',
+            'email_dosen' => 'required|string|email|max:255|unique:dosens,email_dosen',
+        ]);
 
-        return redirect()->route('dosen.index')->with('success', 'Data berhasil ditambahkan');
+        try {
+            $dosen = Dosen::create($validatedData);
+            $page = ceil(Dosen::count() / 20);
+            return redirect()->route('dosen.index', ['page' => $page, 'sort' => 'created_at', 'direction' => 'asc'])->with('success', "Data berhasil ditambahkan: {$dosen->nama}");
+        } catch (\Exception $e) {
+            return redirect()->route('dosen.index')->with('error', "Gagal menambahkan data: {$e->getMessage()}");
+        }
     }
 
     public function edit(Dosen $dosen)
     {
-        $availableEmails = User::whereDoesntHave('dosen')->pluck('email')->push($dosen->email_dosen);
-        return view('dosen_page', compact('dosen', 'availableEmails'));
+        return view('dosen_page', compact('dosen'));
     }
 
     public function update(Request $request, $id)
     {
         $dosen = Dosen::findOrFail($id);
-        $dosen->update($request->all());
 
-        return redirect()->route('dosen.index')->with('success', 'Data berhasil diubah');
+        $validatedData = $request->validate([
+            'nama' => 'required|string|max:255',
+            'nidn' => 'required|string|max:10|unique:dosens,nidn,' . $dosen->id,
+            'email_dosen' => 'required|string|email|max:255|unique:dosens,email_dosen,' . $dosen->id,
+        ]);
+
+        try {
+            $dosen->update($validatedData);
+            $page = ceil(Dosen::where('id', '<=', $id)->count() / 20);
+            return redirect()->route('dosen.index', ['page' => $page, 'sort' => 'created_at', 'direction' => 'asc'])->with('success', "Data berhasil diubah: {$dosen->nama}");
+        } catch (\Exception $e) {
+            return redirect()->route('dosen.index')->with('error', "Gagal mengubah data: {$e->getMessage()}");
+        }
     }
 
     public function destroy($id)
     {
         $dosen = Dosen::findOrFail($id);
-        $dosen->delete();
 
-        return redirect()->route('dosen.index')->with('success', 'Data berhasil dihapus');
+        try {
+            $dosen->delete();
+            $page = ceil((Dosen::count() - 1) / 20);
+            return redirect()->route('dosen.index', ['page' => $page, 'sort' => 'created_at', 'direction' => 'asc'])->with('success', "Data berhasil dihapus: {$dosen->nama}");
+        } catch (\Exception $e) {
+            return redirect()->route('dosen.index')->with('error', "Gagal menghapus data: {$e->getMessage()}");
+        }
     }
-}
+} 

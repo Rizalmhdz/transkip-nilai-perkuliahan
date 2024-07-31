@@ -12,33 +12,32 @@ class KaryaTulisController extends Controller
 {
     public function index(Request $request)
     {
-
         $user = Auth::user();
 
-        $sort = $request->input('sort', 'judul');
+        $sort = $request->input('sort', 'id');
         $direction = $request->input('direction', 'asc');
         $searchKeyword = $request->input('searchKeyword');
+        $page = $request->input('page', 1);
 
-      
+        $query = KaryaTulis::query();
 
-       
-            $query = KaryaTulis::query();
-            
-            if ($searchKeyword) {
+        if ($searchKeyword) {
             $query->where('judul', 'LIKE', "%{$searchKeyword}%")
                   ->orWhere('nim', 'LIKE', "%{$searchKeyword}%");
-            }
-            
-           
-            $karya_tuliss = $query->orderBy($sort, $direction)->paginate(20);
-            
-       
-       
+        }
+
+        $karya_tuliss = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+
+        if ($karya_tuliss->isEmpty() && $page > 1) {
+            $page--;
+            $karya_tuliss = $query->orderBy($sort, $direction)->paginate(20, ['*'], 'page', $page);
+        }
+
         $mahasiswas = Mahasiswa::all();
         $total = $karya_tuliss->total();
         $dosens = Dosen::all();
 
-        return view('karya_tulis_page', compact('karya_tuliss', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'mahasiswas'));
+        return view('karya_tulis_page', compact('karya_tuliss', 'total', 'sort', 'direction', 'searchKeyword', 'dosens', 'mahasiswas', 'page'));
     }
 
     public function create()
@@ -49,30 +48,57 @@ class KaryaTulisController extends Controller
 
     public function store(Request $request)
     {
-        KaryaTulis::create($request->all());
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'nim' => 'required|string|max:10|exists:mahasiswas,nim',
+            'pembimbing' => 'required|string|max:10|exists:dosens,nidn',
+        ]);
 
-        return redirect()->route('karya-tulis.index')->with('success', 'Data berhasil ditambahkan');
-    }
-
-    public function edit(KaryaTulis $karyaTulis)
-    {
-        $dosens = Dosen::all();
-        return view('karya_tulis_page', compact('karyaTulis', 'dosens'));
+        try {
+            KaryaTulis::create($request->all());
+            $page = ceil(KaryaTulis::count() / 20);
+            return redirect()->route('karya-tulis.index', ['page' => $page, 'sort' => 'id', 'direction' => 'asc'])->with('success', 'Data berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->route('karya-tulis.index')->with('error', 'Gagal menambahkan data: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $karyaTulis = KaryaTulis::findOrFail($id);
-        $karyaTulis->update($request->all());
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'nim' => 'required|string|max:10|exists:mahasiswas,nim',
+            'pembimbing' => 'required|string|max:10|exists:dosens,nidn',
+        ]);
 
-        return redirect()->route('karya-tulis.index')->with('success', 'Data berhasil diubah');
+        $karyaTulis = KaryaTulis::findOrFail($id);
+        $data = $request->all();
+
+        try {
+            $karyaTulis->update($data);
+            $page = ceil(KaryaTulis::where('id', '<=', $id)->count() / 20);
+            return redirect()->route('karya-tulis.index', ['page' => $page, 'sort' => 'id', 'direction' => 'asc'])->with('success', 'Data berhasil diubah');
+        } catch (\Exception $e) {
+            return redirect()->route('karya-tulis.index')->with('error', 'Gagal mengubah data: ' . $e->getMessage());
+        }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $karyaTulis = KaryaTulis::findOrFail($id);
-        $karyaTulis->delete();
+        $currentPage = $request->input('page', 1);
 
-        return redirect()->route('karya-tulis.index')->with('success', 'Data berhasil dihapus');
+        try {
+            $karyaTulis->delete();
+            $totalPages = ceil(KaryaTulis::count() / 20);
+
+            if ($currentPage > $totalPages) {
+                $currentPage = $totalPages > 0 ? $totalPages : 1;
+            }
+
+            return redirect()->route('karya-tulis.index', ['page' => $currentPage, 'sort' => 'id', 'direction' => 'asc'])->with('success', 'Data berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->route('karya-tulis.index', ['page' => $currentPage, 'sort' => 'id', 'direction' => 'asc'])->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }
