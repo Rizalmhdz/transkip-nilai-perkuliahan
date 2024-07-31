@@ -395,7 +395,9 @@ $row2additional = $maxHeight - $row2Height;
                             <tr>
                                 <td>
                                     <p><span><b>Karya Tulis :</b></span></p>
-                                    <p class="judul"><span><b> {{ $karya_tulis->judul }}</b></p>
+                                    <p class="judul"><span><b> 
+                                        <?= $karya_tulis->judul ?? 'Belum ada Karya Tulis' ?> 
+                                    </b></p>
                                 </td>
                             </tr>
                         </tbody>

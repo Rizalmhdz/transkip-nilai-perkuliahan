@@ -73,7 +73,9 @@
                         <td>{{ $mahasiswa->nama_lengkap }}</td>
                         <td>{{ $prodi->nama_prodi}}</td>
                         <td> {{$ipk }}</td>
-                        <td> {{ $karya_tulis->judul}}</td>
+                        <td>
+                            <?= $karya_tulis->judul ?? 'Belum ada Karya Tulis' ?>
+                        </td>
                         <td> {{$mahasiswa->tahun_lulus? $mahasiswa->tahun_lulus : 'Belum Lulus'}}</td>
                     </tr>
                     <!-- Add more rows as needed -->
