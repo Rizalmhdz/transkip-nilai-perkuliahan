@@ -38,9 +38,22 @@ function getLabelPredikat($ipk){
 }
 
 function formatTanggalLahir($tanggal) {
-    setlocale(LC_TIME, 'id_ID.UTF-8');
-    return strftime('%d %B %Y', strtotime($tanggal));
+    $bulanIndonesia = [
+        '01' => 'Januari', '02' => 'Februari', '03' => 'Maret',
+        '04' => 'April', '05' => 'Mei', '06' => 'Juni',
+        '07' => 'Juli', '08' => 'Agustus', '09' => 'September',
+        '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+    ];
+    
+    $date = new DateTime($tanggal);
+    $day = $date->format('d');
+    $month = $date->format('m');
+    $year = $date->format('Y');
+    
+    return "{$day} {$bulanIndonesia[$month]} {$year}";
 }
+
+
 
 function getInisialProdi($nama_prodi) {
     $words = explode(' ', $nama_prodi);
