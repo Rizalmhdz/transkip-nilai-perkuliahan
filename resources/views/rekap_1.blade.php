@@ -66,10 +66,10 @@ function getInisialProdi($nama_prodi) {
 
 // Function to calculate the height of a row
 function calculateRowHeight($row, $footer = false) {
-    $headerHeight = 20;
-    $categoryHeight = 32;
+    $headerHeight = 24;
+    $categoryHeight = 36;
     $itemHeight = 12;
-    $footerHeight = 20;
+    $footerHeight = 24;
 
     $categories = [];
     foreach ($row as $studi) {
@@ -93,7 +93,7 @@ $row1Height = calculateRowHeight($row1);
 $row2Height = calculateRowHeight($row2, true); // row2 includes the footer
 
 // Determine the maximum height
-$maxHeight = max($row1Height, $row2Height) + 20;
+$maxHeight = max($row1Height, $row2Height) + 24;
 
 $row1additional = $maxHeight - $row1Height;
 $row2additional = $maxHeight - $row2Height;
@@ -113,35 +113,77 @@ $row2additional = $maxHeight - $row2Height;
             padding: 0;
             font-size: 9px;
         }
-        .header p {
-           margin-top: 0px;
+    
+        .container {
+            width: 100%;
+            box-sizing: border-box;
         }
+    
+        .header, .footer {
+            text-align: center;
+        }
+    
+        .header h2, .header p {
+            margin: 0;
+        }
+    
         .content {
             margin-left: 35px;
             margin-bottom: 15px;
         }
+    
         .content p {
             margin: 0;
         }
+    
         .content p span {
             display: inline-block;
             width: 200px; /* Adjust width as needed */
         }
+    
+        table {
+            margin: 0;
+            width: 100%;
+            border-collapse: collapse;
+        }
+    
+        table, th, td {
+            border: 1px solid black;
+        }
+    
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+    
+        .footer-signature {
+            margin-top: 10px;
+            line-height: 0.5;
+        }
+    
+        .footer-signature .row-tengah td {
+            height: 50px;
+        }
+    
         .no-row-border td {
             border-top: none; /* Hilangkan border atas untuk baris */
             border-bottom: none; /* Hilangkan border bawah untuk baris */
         }
+    
         .second-row-table td {
             font-size: 10px;
             height: 70px;
         }
+    
         .mhs_stat td p {
             margin-top: 0;
             line-height: 0.4;
         }
+    
         .mhs_stat table {
             border: none;
         }
+    
         .mhs_stat table tr td {
             padding: 3px 6px;
             border: none;
@@ -149,44 +191,41 @@ $row2additional = $maxHeight - $row2Height;
             line-height: 0.4;
             height: 8px;
         }
-        .karya_tulis_stat table tr td {
-            border: none;
-            margin-top: 0px;
-            text-align: left;
-            line-height: 0.4;
-        }
-        .karya_tulis_stat .judul {
-            text-align: center;
-        }
+    
+    
         .no-border {
             padding: 2;
             border: none;
         }
-        
+    
         .no-column {
             width: 8px; /* Lebar untuk kolom 3 karakter */
         }
+    
         .narrow-column {
             width: 10px; /* Lebar untuk kolom 3 karakter */
         }
-        
+    
         .row1-th th, .row2-th th {
             border-bottom: 2px solid black;
             padding: 2px 4px;
             font-size: 10px;
             height: 20px;
         }
-
+    
         .narrow-column-nxk {
             width: 30px; /* Lebar untuk kolom 3 karakter */
         }
+    
         /* CSS untuk menyesuaikan tinggi baris */
-        .row-rekap td table{
+        .row-rekap td table {
             font-size: 8px;
         }
+    
         .row-rekap td {
             width: 50%;
         }
+    
         .row1 tr, .row2 tr {
             width: 100%;
             font-size: 10px;
@@ -194,56 +233,84 @@ $row2additional = $maxHeight - $row2Height;
             padding: 2px 4px;
             height: 20px; /* Set height for headers */
         }
+    
         .row1 td, .row2 td {
-           padding: 2px 4px;
-           height: 12px;
+            padding: 2px 4px;
+            height: 12px;
         }
-        .row1 .mata-kuliah, .row2 .mata-kuliah{
+    
+        .row1 .mata-kuliah, .row2 .mata-kuliah {
             padding-left: 8px;
             text-align: left;
         }
+    
         .category-row td {
             font-size: 10px;
             padding: 20px 4px 2px 4px;
         }
-
-        .row1-additional td{
+    
+        .row1-additional td {
             height: <?= $row1additional ?>px;
         }
-
-        .row2-additional td{
+    
+        .row2-additional td {
             height: <?= $row2additional ?>px;
         }
-
+    
         .tfooter td {
             font-size: 10px;
             padding: 2px 4px;
             height: 20px;
         }
-        .footer-signature table tr{
-           padding: 0;
+    
+        .footer-signature table tr {
+            padding: 0;
         }
+    
         .footer-signature table tr td {
-           padding: 0;
+            padding: 0;
             border: none;
         }
-        .footer-signature .row-atas tr{
+    
+        .footer-signature .row-atas tr {
             margin-top: 0px;
             vertical-align: bottom;
         }
-        .footer-signature .row-atas p{
+    
+        .footer-signature .row-atas p {
             line-height: 0.5;
             margin-top: 10px;
             vertical-align: bottom;
         }
-
+    
         .col-depan, .col-belakang {
             width: 40%;
         }
-         .col-tengah {
+    
+        .col-tengah {
             width: 20%;
-         }
+        }
+
+        
+        .karya_tulis_stat {
+            border: none;
+            margin-top: 0px;
+            text-align: left;
+            vertical-align: text-top;
+            line-height: 0.4;
+        }
+    
+        .karya_tulis_stat .label {
+            vertical-align: text-top;
+            text-align: left;
+            margin-left: 5px;
+        }
+        .karya_tulis_stat .judul {
+            vertical-align: text-top;
+            text-align: center;
+        }
     </style>
+    
 </head>
 <body>
     <div class="container">
@@ -407,7 +474,7 @@ $row2additional = $maxHeight - $row2Height;
                         <tbody class="karya_tulis_stat compact">
                             <tr>
                                 <td>
-                                    <p><span><b>Karya Tulis :</b></span></p>
+                                    <p class="label"><span><b>Karya Tulis :</b></span></p>
                                     <p class="judul"><span><b> 
                                         <?= $karya_tulis->judul ?? 'Belum ada Karya Tulis' ?> 
                                     </b></p>

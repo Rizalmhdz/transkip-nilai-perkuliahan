@@ -65,9 +65,10 @@ class HasilStudiController extends Controller
 
         $total = $hasil_studis->total();
         $mata_kuliahs = MataKuliah::all();
-        $mahasiswas = Mahasiswa::whereIn('nim', function($query) {
-            $query->select('nim')->from('hasil_studis');
-        })->get();
+        // $mahasiswas = Mahasiswa::whereIn('nim', function($query) {
+        //     $query->select('nim')->from('hasil_studis');
+        // })->get();
+        $mahasiswas = Mahasiswa::all();
 
         $totalNilai = 0;
         $totalSks = 0;

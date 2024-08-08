@@ -9,43 +9,123 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            font-size: 12px;
+            font-size: 9px;
         }
+    
         .container {
             width: 100%;
-            /* padding: 20px; */
             box-sizing: border-box;
         }
+    
         .header, .footer {
             text-align: center;
+            margin-bottom: 20px;
         }
-        .header h2 {
+    
+        .header h2, .header p {
             margin: 0;
         }
-        /* .content {
-            margin-top: 20px;
-        } */
+    
+        .content {
+            margin-left: 35px;
+            margin-bottom: 15px;
+        }
+    
+        .content p {
+            margin: 0;
+        }
+    
+        .content p span {
+            display: inline-block;
+            width: 200px; /* Adjust width as needed */
+        }
+    
         table {
             margin: 0;
             width: 100%;
             border-collapse: collapse;
         }
+    
         table, th, td {
             border: 1px solid black;
         }
+    
         th, td {
             padding: 8px;
             text-align: center;
         }
-
-       .footer-signature {
+    
+        .footer-signature {
             margin-top: 10px;
             line-height: 0.5;
         }
-       .footer-signature .row-tengah td{
-           height: 50px;
+    
+        .footer-signature .row-tengah td {
+            height: 50px;
+        }
+    
+        .no-row-border td {
+            border-top: none; /* Hilangkan border atas untuk baris */
+            border-bottom: none; /* Hilangkan border bawah untuk baris */
+        }
+    
+        .second-row-table td {
+            font-size: 10px;
+            height: 70px;
+        }
+    
+        .no-border {
+            padding: 2;
+            border: none;
+        }
+    
+        .no-column {
+            width: 8px; /* Lebar untuk kolom 3 karakter */
+        }
+    
+        .narrow-column {
+            width: 10px; /* Lebar untuk kolom 3 karakter */
+        }
+        .narrow-column-nxk {
+            width: 30px; /* Lebar untuk kolom 3 karakter */
+        }
+    
+    
+        .tfooter td {
+            font-size: 10px;
+            padding: 2px 4px;
+            height: 20px;
+        }
+    
+        .footer-signature table tr {
+            padding: 0;
+        }
+    
+        .footer-signature table tr td {
+            padding: 0;
+            border: none;
+        }
+    
+        .footer-signature .row-atas tr {
+            margin-top: 0px;
+            vertical-align: bottom;
+        }
+    
+        .footer-signature .row-atas p {
+            line-height: 0.5;
+            margin-top: 10px;
+            vertical-align: bottom;
+        }
+    
+        .col-depan, .col-belakang {
+            width: 40%;
+        }
+    
+        .col-tengah {
+            width: 20%;
         }
     </style>
+    
 </head>
 <body>
     <div class="container">

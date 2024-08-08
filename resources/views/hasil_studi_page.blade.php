@@ -229,13 +229,17 @@
                         </div>
                         @endif
                         
-                        <button type="button" class="btn btn-outline-dark me-2"> Total Data : {{ $total }}</button>
+                        <button type="button" class="btn btn-outline-dark me-2">Total Data : {{ $total }}</button>
                         @if($isPrint)
-                        {{-- <button type="button" class="btn btn-success" onclick="window.location.href='{{ route('cetak-rekap-nilai', ['nim' => $mahasiswas[0]->nim]) }}'"> --}}
-                        <button type="button" class="btn btn-success" onclick="window.location.href='{{ route('cetak-rekap-nilai', ['nim' => $nim]) }}'">
-                            <i class="fa fa-print me-2"></i> CETAK REKAP NILAI</button>
+                        <button type="button" class="btn btn-success me-2" onclick="window.location.href='{{ route('cetak-rekap-nilai', ['nim' => $nim, 'page' => 1]) }}'">
+                            <i class="fa fa-print me-2"></i> REKAP NILAI
+                        </button>
+                        <button type="button" class="btn btn-info" onclick="window.location.href='{{ route('cetak-rekap-nilai', ['nim' => $nim, 'page' => 2]) }}'">
+                            <i class="fa fa-print me-2"></i> DETAIL
+                        </button>
                         @endif
                     </div>
+                    
                     </div>
                 </div>
                 <div class="row mb-3">

@@ -99,15 +99,15 @@
                     <div class="card-header text-center"><h3>{{ $prodi }}</h3></div>
                     <div class="card-body">
                         <div class="card-body-item d-flex align-items-left">
-                            <p class="mb-0"> <i class="fa fa-chalkboard-teacher me-2"></i> Total Dosens : {{ $stats['dosens'] }}</p>
+                            <p class="mb-0"> <i class="fa fa-chalkboard-teacher me-2"></i> Total Dosen : {{ $stats['dosens'] }}</p>
                         </div>
                         <div class="card-body-item d-flex align-items-center">
                            
-                            <p class="mb-0">  <i class="fa fa-user-graduate me-2"></i>Total Mahasiswas: {{ $stats['mahasiswas'] }}</p>
+                            <p class="mb-0">  <i class="fa fa-user-graduate me-2"></i>Total Mahasiswa: {{ $stats['mahasiswas'] }}</p>
                         </div>
                         <div class="card-body-item d-flex align-items-center">
                            
-                            <p class="mb-0">  <i class="fa fa-book me-2"></i>Total Mata Kuliahs: {{ $stats['mata_kuliahs'] }}</p>
+                            <p class="mb-0">  <i class="fa fa-book me-2"></i>Total Mata Kuliah: {{ $stats['mata_kuliahs'] }}</p>
                         </div>
                         <div class="card-body-item d-flex align-items-center">
                            
@@ -121,11 +121,11 @@
         <div class="container mt-4 stat-table">
             <div class="card-container mt-4">
                 <div class="card">
-                    <div class="card-title">Total Users</div>
+                    <div class="card-title">Total User</div>
                     <div class="card-body">
                         <div class="card-body-item d-flex align-items-center">
                             <i class="fa fa-users"></i>
-                            <p class="mb-0">{{ $totalUsers }} Users</p>
+                            <p class="mb-0">{{ $totalUsers }} User</p>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -133,11 +133,11 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-title">Total Dosens</div>
+                    <div class="card-title">Total Dosen</div>
                     <div class="card-body">
                         <div class="card-body-item d-flex align-items-center">
                             <i class="fa fa-chalkboard-teacher"></i>
-                            <p class="mb-0">{{ $totalDosens }} Dosens</p>
+                            <p class="mb-0">{{ $totalDosens }} Dosen</p>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -145,11 +145,11 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-title">Total Prodis</div>
+                    <div class="card-title">Total Prodi</div>
                     <div class="card-body">
                         <div class="card-body-item d-flex align-items-center">
                             <i class="fa fa-building"></i>
-                            <p class="mb-0">{{ $totalProdis }} Prodis</p>
+                            <p class="mb-0">{{ $totalProdis }} Prodi</p>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -157,11 +157,11 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-title">Total Mahasiswas</div>
+                    <div class="card-title">Total Mahasiswa</div>
                     <div class="card-body">
                         <div class="card-body-item d-flex align-items-center">
                             <i class="fa fa-user-graduate"></i>
-                            <p class="mb-0">{{ $totalMahasiswas }} Mahasiswas</p>
+                            <p class="mb-0">{{ $totalMahasiswas }} Mahasiswa</p>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -169,11 +169,11 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-title">Total Karya Tuliss</div>
+                    <div class="card-title">Total Karya Tulis</div>
                     <div class="card-body">
                         <div class="card-body-item d-flex align-items-center">
                             <i class="fa fa-book"></i>
-                            <p class="mb-0">{{ $totalKaryaTuliss }} Karya Tuliss</p>
+                            <p class="mb-0">{{ $totalKaryaTuliss }} Karya Tulis</p>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -181,11 +181,11 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-title">Total Mata Kuliahs</div>
+                    <div class="card-title">Total Mata Kuliah</div>
                     <div class="card-body">
                         <div class="card-body-item d-flex align-items-center">
                             <i class="fa fa-book-open"></i>
-                            <p class="mb-0">{{ $totalMataKuliahs }} Mata Kuliahs</p>
+                            <p class="mb-0">{{ $totalMataKuliahs }} Mata Kuliah</p>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -193,11 +193,11 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-title">Total Hasil Studis</div>
+                    <div class="card-title">Total Hasil Studi</div>
                     <div class="card-body">
                         <div class="card-body-item d-flex align-items-center">
                             <i class="fa fa-clipboard-list"></i>
-                            <p class="mb-0">{{ $totalHasilStudis }} Hasil Studis</p>
+                            <p class="mb-0">{{ $totalHasilStudis }} Hasil Studi</p>
                         </div>
                     </div>
                     <div class="card-footer">
